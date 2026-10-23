@@ -82,6 +82,7 @@ window.RDS_COMPOUNDS = [
    "off": 0,
    "note": "Catalog suggests an optional ≈4 months on / 4 off (≈120 / 120 days). No trial basis. 0 = continuous."
   },
+  "cycleOptions": [],
   "suggest": [
    "seed-creatine",
    "seed-magnesium"
@@ -151,6 +152,7 @@ window.RDS_COMPOUNDS = [
    "off": 0,
    "note": "No cycle documented by the catalog or the label. 0 = continuous."
   },
+  "cycleOptions": [],
   "suggest": [
    "seed-creatine",
    "seed-magnesium"
@@ -242,6 +244,7 @@ window.RDS_COMPOUNDS = [
    "off": 0,
    "note": "No cycle documented. 0 = continuous."
   },
+  "cycleOptions": [],
   "suggest": [
    "seed-creatine",
    "seed-magnesium"
@@ -331,6 +334,23 @@ window.RDS_COMPOUNDS = [
    "off": 42,
    "note": "Catalog: 8 weeks on, 4–8 weeks off (56 / 28–56 days). No trial basis."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 42,
+    "label": "8 wk on / 6 wk off (default)"
+   },
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (short)"
+   },
+   {
+    "on": 56,
+    "off": 56,
+    "label": "8 wk on / 8 wk off (long)"
+   }
+  ],
   "suggest": [
    "seed-creatine"
   ]
@@ -380,6 +400,7 @@ window.RDS_COMPOUNDS = [
    "off": 0,
    "note": "No cycle documented. 0 = continuous."
   },
+  "cycleOptions": [],
   "suggest": [
    "seed-creatine"
   ]
@@ -433,6 +454,7 @@ window.RDS_COMPOUNDS = [
    "off": 0,
    "note": "No cycle documented. 0 = continuous."
   },
+  "cycleOptions": [],
   "suggest": [
    "seed-creatine"
   ]
@@ -481,6 +503,18 @@ window.RDS_COMPOUNDS = [
    "off": 10,
    "note": "Catalog: 20 on / 10 off (standard) or 90 on / 30 off (fat loss), in days."
   },
+  "cycleOptions": [
+   {
+    "on": 20,
+    "off": 10,
+    "label": "20 d on / 10 d off (standard · default)"
+   },
+   {
+    "on": 90,
+    "off": 30,
+    "label": "90 d on / 30 d off (fat loss)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -533,6 +567,23 @@ window.RDS_COMPOUNDS = [
    "off": 21,
    "note": "Catalog: 4–8 weeks on, 2–4 weeks off (28–56 / 14–28 days)."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 21,
+    "label": "8 wk on / 3 wk off (default)"
+   },
+   {
+    "on": 28,
+    "off": 14,
+    "label": "4 wk on / 2 wk off (short)"
+   },
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (long)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -571,6 +622,18 @@ window.RDS_COMPOUNDS = [
    "off": 28,
    "note": "Catalog: 8–16 weeks on, 4–8 weeks off (56–112 / 28–56 days)."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (default)"
+   },
+   {
+    "on": 112,
+    "off": 56,
+    "label": "16 wk on / 8 wk off (long)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -614,6 +677,18 @@ window.RDS_COMPOUNDS = [
    "off": 28,
    "note": "Catalog: 28 days on, 12–28 days off."
   },
+  "cycleOptions": [
+   {
+    "on": 28,
+    "off": 28,
+    "label": "4 wk on / 4 wk off (default)"
+   },
+   {
+    "on": 28,
+    "off": 12,
+    "label": "4 wk on / 12 d off (short)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -686,6 +761,18 @@ window.RDS_COMPOUNDS = [
    "off": 56,
    "note": "Catalog: 12–16 weeks on, 4–8 weeks off (84–112 / 28–56 days). The label has no cycling."
   },
+  "cycleOptions": [
+   {
+    "on": 112,
+    "off": 56,
+    "label": "16 wk on / 8 wk off (default)"
+   },
+   {
+    "on": 84,
+    "off": 28,
+    "label": "12 wk on / 4 wk off (short)"
+   }
+  ],
   "suggest": [
    "seed-creatine"
   ]
@@ -738,6 +825,18 @@ window.RDS_COMPOUNDS = [
    "off": 56,
    "note": "Catalog: 12–16 weeks on, 6–8 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 112,
+    "off": 56,
+    "label": "16 wk on / 8 wk off (default)"
+   },
+   {
+    "on": 84,
+    "off": 42,
+    "label": "12 wk on / 6 wk off (short)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -795,6 +894,23 @@ window.RDS_COMPOUNDS = [
    "off": 56,
    "note": "Catalog: 12 weeks on, 6–12 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 84,
+    "off": 56,
+    "label": "12 wk on / 8 wk off (default)"
+   },
+   {
+    "on": 84,
+    "off": 42,
+    "label": "12 wk on / 6 wk off (short)"
+   },
+   {
+    "on": 84,
+    "off": 84,
+    "label": "12 wk on / 12 wk off (long)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -840,6 +956,23 @@ window.RDS_COMPOUNDS = [
    "off": 35,
    "note": "Catalog: 8–12 weeks on, 4–6 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 84,
+    "off": 35,
+    "label": "12 wk on / 5 wk off (default)"
+   },
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (short)"
+   },
+   {
+    "on": 84,
+    "off": 42,
+    "label": "12 wk on / 6 wk off (long)"
+   }
+  ],
   "suggest": [
    "seed-creatine"
   ]
@@ -876,6 +1009,18 @@ window.RDS_COMPOUNDS = [
    "off": 28,
    "note": "Catalog: 8–12 weeks on, 4 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 84,
+    "off": 28,
+    "label": "12 wk on / 4 wk off (default)"
+   },
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (short)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -911,6 +1056,23 @@ window.RDS_COMPOUNDS = [
    "off": 21,
    "note": "Catalog: 6–12 weeks on, 2–4 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 84,
+    "off": 21,
+    "label": "12 wk on / 3 wk off (default)"
+   },
+   {
+    "on": 42,
+    "off": 14,
+    "label": "6 wk on / 2 wk off (short)"
+   },
+   {
+    "on": 84,
+    "off": 28,
+    "label": "12 wk on / 4 wk off (long)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -957,6 +1119,23 @@ window.RDS_COMPOUNDS = [
    "off": 42,
    "note": "Catalog: 8 weeks on, 4–8 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 42,
+    "label": "8 wk on / 6 wk off (default)"
+   },
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (short)"
+   },
+   {
+    "on": 56,
+    "off": 56,
+    "label": "8 wk on / 8 wk off (long)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -1026,6 +1205,18 @@ window.RDS_COMPOUNDS = [
    "off": 0,
    "note": "Catalog: 8–16 weeks on, 8–16 off for the standard protocol; low dose 'depends on application'."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 56,
+    "label": "8 wk on / 8 wk off (short)"
+   },
+   {
+    "on": 112,
+    "off": 112,
+    "label": "16 wk on / 16 wk off (long)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -1075,6 +1266,13 @@ window.RDS_COMPOUNDS = [
    "off": 28,
    "note": "Catalog: 4 weeks on, 4 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 28,
+    "off": 28,
+    "label": "4 wk on / 4 wk off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -1109,6 +1307,13 @@ window.RDS_COMPOUNDS = [
    "off": 28,
    "note": "Catalog: 8 weeks on, 4 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -1155,6 +1360,7 @@ window.RDS_COMPOUNDS = [
    "off": 0,
    "note": "No cycle."
   },
+  "cycleOptions": [],
   "suggest": []
  },
  {
@@ -1197,6 +1403,13 @@ window.RDS_COMPOUNDS = [
    "off": 28,
    "note": "Catalog: 4 weeks on, 4 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 28,
+    "off": 28,
+    "label": "4 wk on / 4 wk off (default)"
+   }
+  ],
   "suggest": [
    "glynac"
   ]
@@ -1241,6 +1454,23 @@ window.RDS_COMPOUNDS = [
    "off": 63,
    "note": "Catalog: 12 weeks on, 6–12 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 84,
+    "off": 63,
+    "label": "12 wk on / 9 wk off (default)"
+   },
+   {
+    "on": 84,
+    "off": 42,
+    "label": "12 wk on / 6 wk off (short)"
+   },
+   {
+    "on": 84,
+    "off": 84,
+    "label": "12 wk on / 12 wk off (long)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -1299,6 +1529,18 @@ window.RDS_COMPOUNDS = [
    "off": 35,
    "note": "Catalog: 8–10 weeks on, 4–5 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 70,
+    "off": 35,
+    "label": "10 wk on / 5 wk off (default)"
+   },
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (short)"
+   }
+  ],
   "suggest": [
    "seed-alcar"
   ]
@@ -1352,6 +1594,23 @@ window.RDS_COMPOUNDS = [
    "off": 35,
    "note": "Catalog: up to 12 weeks on, 4–6 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 84,
+    "off": 35,
+    "label": "12 wk on / 5 wk off (default)"
+   },
+   {
+    "on": 84,
+    "off": 28,
+    "label": "12 wk on / 4 wk off (short)"
+   },
+   {
+    "on": 84,
+    "off": 42,
+    "label": "12 wk on / 6 wk off (long)"
+   }
+  ],
   "suggest": [
    "nr-precursor"
   ]
@@ -1413,6 +1672,23 @@ window.RDS_COMPOUNDS = [
    "off": 42,
    "note": "Catalog: 8–12 weeks on, 4–8 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 84,
+    "off": 42,
+    "label": "12 wk on / 6 wk off (default)"
+   },
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (short)"
+   },
+   {
+    "on": 84,
+    "off": 56,
+    "label": "12 wk on / 8 wk off (long)"
+   }
+  ],
   "suggest": [
    "seed-alcar"
   ]
@@ -1459,6 +1735,23 @@ window.RDS_COMPOUNDS = [
    "off": 28,
    "note": "Catalog: 4/8/12 weeks on, 2/4/6 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (default)"
+   },
+   {
+    "on": 28,
+    "off": 14,
+    "label": "4 wk on / 2 wk off"
+   },
+   {
+    "on": 84,
+    "off": 42,
+    "label": "12 wk on / 6 wk off"
+   }
+  ],
   "suggest": [
    "seed-benfotiamine",
    "seed-alcar",
@@ -1505,6 +1798,23 @@ window.RDS_COMPOUNDS = [
    "off": 42,
    "note": "Catalog: 8–16 weeks on, 4–8 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 112,
+    "off": 42,
+    "label": "16 wk on / 6 wk off (default)"
+   },
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (short)"
+   },
+   {
+    "on": 112,
+    "off": 56,
+    "label": "16 wk on / 8 wk off (long)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -1568,6 +1878,23 @@ window.RDS_COMPOUNDS = [
    "off": 42,
    "note": "Catalog: 8–12 weeks on, 4–8 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 84,
+    "off": 42,
+    "label": "12 wk on / 6 wk off (default)"
+   },
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (short)"
+   },
+   {
+    "on": 84,
+    "off": 56,
+    "label": "12 wk on / 8 wk off (long)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -1615,6 +1942,23 @@ window.RDS_COMPOUNDS = [
    "off": 84,
    "note": "Catalog: 8–16 weeks on, 8–16 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 112,
+    "off": 84,
+    "label": "16 wk on / 12 wk off (default)"
+   },
+   {
+    "on": 56,
+    "off": 56,
+    "label": "8 wk on / 8 wk off (short)"
+   },
+   {
+    "on": 112,
+    "off": 112,
+    "label": "16 wk on / 16 wk off (long)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -1663,6 +2007,18 @@ window.RDS_COMPOUNDS = [
    "off": 0,
    "note": "Catalog: 4–24 weeks on, 2–12 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 28,
+    "off": 14,
+    "label": "4 wk on / 2 wk off (short)"
+   },
+   {
+    "on": 168,
+    "off": 84,
+    "label": "24 wk on / 12 wk off (long)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -1716,6 +2072,23 @@ window.RDS_COMPOUNDS = [
    "off": 21,
    "note": "Catalog: 8 weeks on, 2–4 weeks off (or 3 months on, 1 off)."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 21,
+    "label": "8 wk on / 3 wk off (default)"
+   },
+   {
+    "on": 56,
+    "off": 14,
+    "label": "8 wk on / 2 wk off (short)"
+   },
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (long)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -1770,6 +2143,23 @@ window.RDS_COMPOUNDS = [
    "off": 35,
    "note": "Catalog: 8–10 weeks on, 4–6 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 35,
+    "label": "8 wk on / 5 wk off (default)"
+   },
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (short)"
+   },
+   {
+    "on": 70,
+    "off": 42,
+    "label": "10 wk on / 6 wk off (long)"
+   }
+  ],
   "suggest": [
    "vitc-gelatin",
    "seed-collagen",
@@ -1817,6 +2207,23 @@ window.RDS_COMPOUNDS = [
    "off": 42,
    "note": "Catalog: 8 weeks on, 4–8 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 42,
+    "label": "8 wk on / 6 wk off (default)"
+   },
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (short)"
+   },
+   {
+    "on": 56,
+    "off": 56,
+    "label": "8 wk on / 8 wk off (long)"
+   }
+  ],
   "suggest": [
    "vitc-gelatin",
    "seed-collagen",
@@ -1860,6 +2267,23 @@ window.RDS_COMPOUNDS = [
    "off": 56,
    "note": "Catalog: 4–12 weeks on, 4–12 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 56,
+    "label": "8 wk on / 8 wk off (default)"
+   },
+   {
+    "on": 28,
+    "off": 28,
+    "label": "4 wk on / 4 wk off (short)"
+   },
+   {
+    "on": 84,
+    "off": 84,
+    "label": "12 wk on / 12 wk off (long)"
+   }
+  ],
   "suggest": [
    "seed-collagen",
    "seed-vitc",
@@ -1899,6 +2323,23 @@ window.RDS_COMPOUNDS = [
    "off": 42,
    "note": "Catalog: 8 weeks on, 4–8 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 42,
+    "label": "8 wk on / 6 wk off (default)"
+   },
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (short)"
+   },
+   {
+    "on": 56,
+    "off": 56,
+    "label": "8 wk on / 8 wk off (long)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -1934,6 +2375,23 @@ window.RDS_COMPOUNDS = [
    "off": 21,
    "note": "Catalog: 4 weeks on, 2–4 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 28,
+    "off": 21,
+    "label": "4 wk on / 3 wk off (default)"
+   },
+   {
+    "on": 28,
+    "off": 14,
+    "label": "4 wk on / 2 wk off (short)"
+   },
+   {
+    "on": 28,
+    "off": 28,
+    "label": "4 wk on / 4 wk off (long)"
+   }
+  ],
   "suggest": [
    "seed-citicoline"
   ]
@@ -1985,6 +2443,23 @@ window.RDS_COMPOUNDS = [
    "off": 49,
    "note": "Catalog: 6–8 weeks on, 6–8 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 49,
+    "label": "8 wk on / 7 wk off (default)"
+   },
+   {
+    "on": 42,
+    "off": 42,
+    "label": "6 wk on / 6 wk off (short)"
+   },
+   {
+    "on": 56,
+    "off": 56,
+    "label": "8 wk on / 8 wk off (long)"
+   }
+  ],
   "suggest": [
    "seed-citicoline"
   ]
@@ -2032,6 +2507,23 @@ window.RDS_COMPOUNDS = [
    "off": 21,
    "note": "Catalog: 4–6 weeks on, 2–4 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 42,
+    "off": 21,
+    "label": "6 wk on / 3 wk off (default)"
+   },
+   {
+    "on": 28,
+    "off": 14,
+    "label": "4 wk on / 2 wk off (short)"
+   },
+   {
+    "on": 42,
+    "off": 28,
+    "label": "6 wk on / 4 wk off (long)"
+   }
+  ],
   "suggest": [
    "seed-citicoline"
   ]
@@ -2072,6 +2564,23 @@ window.RDS_COMPOUNDS = [
    "off": 42,
    "note": "Catalog: 8–12 weeks on, 4–8 weeks off."
   },
+  "cycleOptions": [
+   {
+    "on": 84,
+    "off": 42,
+    "label": "12 wk on / 6 wk off (default)"
+   },
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (short)"
+   },
+   {
+    "on": 84,
+    "off": 56,
+    "label": "12 wk on / 8 wk off (long)"
+   }
+  ],
   "suggest": [
    "melatonin",
    "seed-magnesium"
@@ -2110,6 +2619,13 @@ window.RDS_COMPOUNDS = [
    "off": 112,
    "note": "Catalog: 10-day courses, 2–3 times a year."
   },
+  "cycleOptions": [
+   {
+    "on": 10,
+    "off": 112,
+    "label": "10 d on / 16 wk off (default)"
+   }
+  ],
   "suggest": [
    "melatonin",
    "seed-magnesium"
@@ -2159,6 +2675,18 @@ window.RDS_COMPOUNDS = [
    "off": 56,
    "note": "Catalog: 8–12 weeks on, washout equal to the cycle length."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 56,
+    "label": "8 wk on / 8 wk off (default)"
+   },
+   {
+    "on": 84,
+    "off": 84,
+    "label": "12 wk on / 12 wk off (long)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -2205,6 +2733,13 @@ window.RDS_COMPOUNDS = [
    "off": 120,
    "note": "Catalog course length / yearly repeats; 40 days on is the default."
   },
+  "cycleOptions": [
+   {
+    "on": 40,
+    "off": 120,
+    "label": "40 d on / 120 d off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -2240,6 +2775,13 @@ window.RDS_COMPOUNDS = [
    "off": 100,
    "note": "Catalog course length / yearly repeats; 20 days on is the default."
   },
+  "cycleOptions": [
+   {
+    "on": 20,
+    "off": 100,
+    "label": "20 d on / 100 d off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -2275,6 +2817,13 @@ window.RDS_COMPOUNDS = [
    "off": 100,
    "note": "Catalog course length / yearly repeats; 20 days on is the default."
   },
+  "cycleOptions": [
+   {
+    "on": 20,
+    "off": 100,
+    "label": "20 d on / 100 d off (default)"
+   }
+  ],
   "suggest": [
    "vitc-rda",
    "vitc-gelatin",
@@ -2315,6 +2864,13 @@ window.RDS_COMPOUNDS = [
    "off": 100,
    "note": "Catalog course length / yearly repeats; 20 days on is the default."
   },
+  "cycleOptions": [
+   {
+    "on": 20,
+    "off": 100,
+    "label": "20 d on / 100 d off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -2350,6 +2906,13 @@ window.RDS_COMPOUNDS = [
    "off": 120,
    "note": "Catalog course length / yearly repeats; 30 days on is the default."
   },
+  "cycleOptions": [
+   {
+    "on": 30,
+    "off": 120,
+    "label": "30 d on / 120 d off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -2385,6 +2948,13 @@ window.RDS_COMPOUNDS = [
    "off": 90,
    "note": "Catalog course length / yearly repeats; 30 days on is the default."
   },
+  "cycleOptions": [
+   {
+    "on": 30,
+    "off": 90,
+    "label": "30 d on / 90 d off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -2420,6 +2990,13 @@ window.RDS_COMPOUNDS = [
    "off": 110,
    "note": "Catalog course length / yearly repeats; 10 days on is the default."
   },
+  "cycleOptions": [
+   {
+    "on": 10,
+    "off": 110,
+    "label": "10 d on / 110 d off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -2473,6 +3050,13 @@ window.RDS_COMPOUNDS = [
    "off": 140,
    "note": "Catalog: repeat 2–3 times a year."
   },
+  "cycleOptions": [
+   {
+    "on": 20,
+    "off": 140,
+    "label": "20 d on / 20 wk off (default)"
+   }
+  ],
   "suggest": [
    "melatonin",
    "seed-magnesium"
@@ -2515,6 +3099,13 @@ window.RDS_COMPOUNDS = [
    "off": 28,
    "note": "Catalog: 8+ weeks on, washout half as long."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -2554,6 +3145,13 @@ window.RDS_COMPOUNDS = [
    "off": 28,
    "note": "Catalog: 8+ weeks on, washout half as long."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (default)"
+   }
+  ],
   "suggest": [
    "seed-b12"
   ]
@@ -2595,6 +3193,13 @@ window.RDS_COMPOUNDS = [
    "off": 28,
    "note": "Catalog: 8+ weeks on, washout half as long."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (default)"
+   }
+  ],
   "suggest": [
    "seed-b12"
   ]
@@ -2636,6 +3241,13 @@ window.RDS_COMPOUNDS = [
    "off": 28,
    "note": "Catalog: 8+ weeks on, washout half as long."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -2675,6 +3287,13 @@ window.RDS_COMPOUNDS = [
    "off": 28,
    "note": "Catalog: 8+ weeks on, washout half as long."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -2713,6 +3332,18 @@ window.RDS_COMPOUNDS = [
    "off": 21,
    "note": "Catalog: 4–6 weeks on, 2–3 off."
   },
+  "cycleOptions": [
+   {
+    "on": 42,
+    "off": 21,
+    "label": "6 wk on / 3 wk off (default)"
+   },
+   {
+    "on": 28,
+    "off": 14,
+    "label": "4 wk on / 2 wk off (short)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -2752,6 +3383,13 @@ window.RDS_COMPOUNDS = [
    "off": 42,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 42,
+    "label": "8 wk on / 6 wk off (default)"
+   }
+  ],
   "suggest": [
    "vitc-gelatin",
    "seed-collagen",
@@ -2796,6 +3434,13 @@ window.RDS_COMPOUNDS = [
    "off": 28,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (default)"
+   }
+  ],
   "suggest": [
    "vitc-rda",
    "vitc-gelatin",
@@ -2847,6 +3492,13 @@ window.RDS_COMPOUNDS = [
    "off": 84,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 84,
+    "off": 84,
+    "label": "12 wk on / 12 wk off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -2886,6 +3538,13 @@ window.RDS_COMPOUNDS = [
    "off": 84,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 84,
+    "off": 84,
+    "label": "12 wk on / 12 wk off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -2925,6 +3584,13 @@ window.RDS_COMPOUNDS = [
    "off": 56,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 56,
+    "label": "8 wk on / 8 wk off (default)"
+   }
+  ],
   "suggest": [
    "vitc-gelatin",
    "seed-collagen",
@@ -2977,6 +3643,13 @@ window.RDS_COMPOUNDS = [
    "off": 21,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 42,
+    "off": 21,
+    "label": "6 wk on / 3 wk off (default)"
+   }
+  ],
   "suggest": [
    "vitc-rda",
    "collagen-peptides",
@@ -3028,6 +3701,7 @@ window.RDS_COMPOUNDS = [
    "off": 0,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [],
   "suggest": [
    "creatine"
   ]
@@ -3069,6 +3743,7 @@ window.RDS_COMPOUNDS = [
    "off": 0,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [],
   "suggest": [
    "creatine"
   ]
@@ -3114,6 +3789,13 @@ window.RDS_COMPOUNDS = [
    "off": 28,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -3153,6 +3835,13 @@ window.RDS_COMPOUNDS = [
    "off": 35,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 42,
+    "off": 35,
+    "label": "6 wk on / 5 wk off (default)"
+   }
+  ],
   "suggest": [
    "vitc-rda",
    "seed-collagen",
@@ -3192,6 +3881,13 @@ window.RDS_COMPOUNDS = [
    "off": 35,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 35,
+    "off": 35,
+    "label": "5 wk on / 5 wk off (default)"
+   }
+  ],
   "suggest": [
    "vitc-gelatin",
    "seed-collagen",
@@ -3236,6 +3932,13 @@ window.RDS_COMPOUNDS = [
    "off": 28,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 70,
+    "off": 28,
+    "label": "10 wk on / 4 wk off (default)"
+   }
+  ],
   "suggest": [
    "nr-precursor"
   ]
@@ -3285,6 +3988,13 @@ window.RDS_COMPOUNDS = [
    "off": 21,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 21,
+    "label": "8 wk on / 3 wk off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -3330,6 +4040,13 @@ window.RDS_COMPOUNDS = [
    "off": 42,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 84,
+    "off": 42,
+    "label": "12 wk on / 6 wk off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -3375,6 +4092,13 @@ window.RDS_COMPOUNDS = [
    "off": 42,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 84,
+    "off": 42,
+    "label": "12 wk on / 6 wk off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -3415,6 +4139,13 @@ window.RDS_COMPOUNDS = [
    "off": 21,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 21,
+    "label": "8 wk on / 3 wk off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -3451,6 +4182,13 @@ window.RDS_COMPOUNDS = [
    "off": 21,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 21,
+    "label": "8 wk on / 3 wk off (default)"
+   }
+  ],
   "suggest": [
    "vitc-rda",
    "vitc-gelatin"
@@ -3490,6 +4228,13 @@ window.RDS_COMPOUNDS = [
    "off": 21,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 21,
+    "label": "8 wk on / 3 wk off (default)"
+   }
+  ],
   "suggest": [
    "vitc-rda",
    "vitc-gelatin"
@@ -3537,6 +4282,13 @@ window.RDS_COMPOUNDS = [
    "off": 42,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 84,
+    "off": 42,
+    "label": "12 wk on / 6 wk off (default)"
+   }
+  ],
   "suggest": [
    "vitc-rda",
    "collagen-peptides"
@@ -3576,6 +4328,13 @@ window.RDS_COMPOUNDS = [
    "off": 21,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 21,
+    "label": "8 wk on / 3 wk off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -3612,6 +4371,13 @@ window.RDS_COMPOUNDS = [
    "off": 49,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 112,
+    "off": 49,
+    "label": "16 wk on / 7 wk off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -3652,6 +4418,13 @@ window.RDS_COMPOUNDS = [
    "off": 21,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 21,
+    "label": "8 wk on / 3 wk off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -3692,6 +4465,13 @@ window.RDS_COMPOUNDS = [
    "off": 21,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 21,
+    "label": "8 wk on / 3 wk off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -3728,6 +4508,13 @@ window.RDS_COMPOUNDS = [
    "off": 24,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 24,
+    "label": "8 wk on / 24 d off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -3764,6 +4551,13 @@ window.RDS_COMPOUNDS = [
    "off": 35,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 84,
+    "off": 35,
+    "label": "12 wk on / 5 wk off (default)"
+   }
+  ],
   "suggest": [
    "vitc-rda",
    "collagen-peptides",
@@ -3799,6 +4593,7 @@ window.RDS_COMPOUNDS = [
    "off": 0,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [],
   "suggest": [
    "vitc-rda",
    "seed-collagen",
@@ -3840,6 +4635,13 @@ window.RDS_COMPOUNDS = [
    "off": 30,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 30,
+    "off": 30,
+    "label": "30 d on / 30 d off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -3876,6 +4678,7 @@ window.RDS_COMPOUNDS = [
    "off": 0,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [],
   "suggest": [
    "melatonin"
   ]
@@ -3918,6 +4721,13 @@ window.RDS_COMPOUNDS = [
    "off": 56,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 35,
+    "off": 56,
+    "label": "5 wk on / 8 wk off (default)"
+   }
+  ],
   "suggest": [
    "melatonin"
   ]
@@ -3956,6 +4766,13 @@ window.RDS_COMPOUNDS = [
    "off": 35,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 84,
+    "off": 35,
+    "label": "12 wk on / 5 wk off (default)"
+   }
+  ],
   "suggest": [
    "glynac"
   ]
@@ -3998,6 +4815,13 @@ window.RDS_COMPOUNDS = [
    "off": 30,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 30,
+    "off": 30,
+    "label": "30 d on / 30 d off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -4032,6 +4856,13 @@ window.RDS_COMPOUNDS = [
    "off": 14,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 84,
+    "off": 14,
+    "label": "12 wk on / 2 wk off (default)"
+   }
+  ],
   "suggest": [
    "nr-precursor"
   ]
@@ -4065,6 +4896,13 @@ window.RDS_COMPOUNDS = [
    "off": 28,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 84,
+    "off": 28,
+    "label": "12 wk on / 4 wk off (default)"
+   }
+  ],
   "suggest": [
    "glynac",
    "nr-precursor"
@@ -4099,6 +4937,13 @@ window.RDS_COMPOUNDS = [
    "off": 28,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 28,
+    "label": "8 wk on / 4 wk off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -4135,6 +4980,13 @@ window.RDS_COMPOUNDS = [
    "off": 14,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 28,
+    "off": 14,
+    "label": "4 wk on / 2 wk off (default)"
+   }
+  ],
   "suggest": [
    "melatonin"
   ]
@@ -4173,6 +5025,13 @@ window.RDS_COMPOUNDS = [
    "off": 21,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 42,
+    "off": 21,
+    "label": "6 wk on / 3 wk off (default)"
+   }
+  ],
   "suggest": [
    "seed-citicoline"
   ]
@@ -4211,6 +5070,13 @@ window.RDS_COMPOUNDS = [
    "off": 21,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 42,
+    "off": 21,
+    "label": "6 wk on / 3 wk off (default)"
+   }
+  ],
   "suggest": [
    "seed-citicoline"
   ]
@@ -4259,6 +5125,13 @@ window.RDS_COMPOUNDS = [
    "off": 182,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 182,
+    "off": 182,
+    "label": "26 wk on / 26 wk off (default)"
+   }
+  ],
   "suggest": [
    "seed-creatine"
   ]
@@ -4295,6 +5168,13 @@ window.RDS_COMPOUNDS = [
    "off": 42,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 84,
+    "off": 42,
+    "label": "12 wk on / 6 wk off (default)"
+   }
+  ],
   "suggest": [
    "seed-creatine"
   ]
@@ -4331,6 +5211,13 @@ window.RDS_COMPOUNDS = [
    "off": 42,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 42,
+    "label": "8 wk on / 6 wk off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -4365,6 +5252,7 @@ window.RDS_COMPOUNDS = [
    "off": 0,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [],
   "suggest": [
    "creatine"
   ]
@@ -4401,6 +5289,13 @@ window.RDS_COMPOUNDS = [
    "off": 21,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 56,
+    "off": 21,
+    "label": "8 wk on / 3 wk off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -4435,6 +5330,7 @@ window.RDS_COMPOUNDS = [
    "off": 0,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [],
   "suggest": []
  },
  {
@@ -4469,6 +5365,13 @@ window.RDS_COMPOUNDS = [
    "off": 35,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 84,
+    "off": 35,
+    "label": "12 wk on / 5 wk off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -4503,6 +5406,7 @@ window.RDS_COMPOUNDS = [
    "off": 0,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [],
   "suggest": []
  },
  {
@@ -4537,6 +5441,13 @@ window.RDS_COMPOUNDS = [
    "off": 35,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 84,
+    "off": 35,
+    "label": "12 wk on / 5 wk off (default)"
+   }
+  ],
   "suggest": [
    "vitc-rda",
    "vitc-gelatin"
@@ -4574,6 +5485,13 @@ window.RDS_COMPOUNDS = [
    "off": 28,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 28,
+    "off": 28,
+    "label": "4 wk on / 4 wk off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -4608,6 +5526,13 @@ window.RDS_COMPOUNDS = [
    "off": 21,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 42,
+    "off": 21,
+    "label": "6 wk on / 3 wk off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -4642,6 +5567,13 @@ window.RDS_COMPOUNDS = [
    "off": 42,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [
+   {
+    "on": 84,
+    "off": 42,
+    "label": "12 wk on / 6 wk off (default)"
+   }
+  ],
   "suggest": []
  },
  {
@@ -4671,6 +5603,7 @@ window.RDS_COMPOUNDS = [
    "off": 0,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [],
   "suggest": [
    "vitc-rda",
    "collagen-peptides"
@@ -4703,6 +5636,7 @@ window.RDS_COMPOUNDS = [
    "off": 0,
    "note": "Catalog cycle."
   },
+  "cycleOptions": [],
   "suggest": [
    "vitc-rda",
    "collagen-peptides"

@@ -157,7 +157,7 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
   // Returns null (nothing), {washout:true,...} or {dose, step, week, cycle} for protocol p on date s.
   function scheduleFor(p, s) {
     var d = diffDays(p.start, s);
-    if (d < 0 || p.paused) return null;
+    if (d < 0 || p.paused || (p.endDate && s > p.endDate)) return null;
     var inPhase = d, cycleNo = 1;
     if (p.cycleOn && p.cycleOff) {
       var period = p.cycleOn + p.cycleOff;
@@ -175,6 +175,8 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
     }
     return null; // protocol ended
   }
+  // Final dose day for n cycles: the last on-day of cycle n (its washout is not scheduled).
+  function cycleEnd(start, on, off, n) { return addDays(start, (n - 1) * (on + off) + on - 1); }
   function vialOf(p) { return p.vial; }
   function units(p, dose) { var v = vialOf(p); return v ? dose / (v.mg / v.ml) * 100 : 0; }
   function injectable(p) { return !p.route || p.route === 'Injectable'; }
@@ -212,6 +214,7 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
         var r = scheduleFor(p, s);
         if (!r) return;
         if (r.washout) { wash = true; if (r.washDay === 1) wl = '<span class="wlabel">Washout begins</span>'; return; }
+        if (s === p.endDate) wl = '<span class="wlabel">' + esc(p.short) + ' final dose</span>';
         var e = S.log[logKey(p, s)], cls = e ? e.status : (s < TODAY ? 'missed' : '');
         var dose = e && e.dose != null ? e.dose : r.dose;
         var label = (S.protocols.length > 1 ? esc(p.short) + ' ' : '') + fd(dose) + ' ' + (p.unit || 'mg') + (injectable(p) ? ' · ' + f1(units(p, dose)) + 'u' : '');
@@ -243,7 +246,7 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
       body += '<div class="dose-card" style="border-left-color:' + colorOf(p) + '"><h3>' + esc(p.name) + ' <span class="muted small">· ' + doseTime(p) + '</span></h3>' +
         '<div class="big">' + fd(dose) + ' ' + (p.unit || 'mg') + (injectable(p) ? ' <span class="muted">= ' + f1(u) + ' units · ' + (dose / (v.mg / v.ml)).toFixed(2) + ' mL</span>' : ' <span class="muted">' + esc(p.route) + '</span>') + '</div>' + ((p.perDay || 1) > 1 ? '<p class="kv"><b>× ' + p.perDay + ' injections today</b> (' + fd(dose * p.perDay) + ' mg total)</p>' : '') +
         (injectable(p) && u > 100 ? '<p class="warn small">Over 100 units: split across two injections.</p>' : '') +
-        (p.note ? '<p class="kv">' + esc(p.note) + '</p>' : '') + '<p class="kv">Step ' + (r.step + 1) + ' of ' + p.steps.length + ' · week ' + r.week + (p.cycleOn ? ' · cycle ' + r.cycle + ' (' + p.cycleOn + ' d on)' : '') + (injectable(p) ? ' · ' + v.mg + ' ' + (p.unit || 'mg') + ' vial + ' + v.ml + ' mL' : '') + '</p>' +
+        (p.note ? '<p class="kv">' + esc(p.note) + '</p>' : '') + '<p class="kv">Step ' + (r.step + 1) + ' of ' + p.steps.length + ' · week ' + r.week + (p.cycleOn ? ' · cycle ' + r.cycle + (p.cycles ? ' of ' + p.cycles : '') + ' (' + p.cycleOn + ' d on)' : '') + (sel === p.endDate ? ' · <b>final dose</b>' : '') + (injectable(p) ? ' · ' + v.mg + ' ' + (p.unit || 'mg') + ' vial + ' + v.ml + ' mL' : '') + '</p>' +
         (!injectable(p) ? '' : vs ? '<p class="kv">Vial: ' + fd(vs.left) + ' ' + (p.unit || 'mg') + ' left · mixed ' + vs.age + ' d ago' + (p.useWithinDays && vs.age > p.useWithinDays ? ' <span class="warn">(past the catalog\'s ' + p.useWithinDays + '-day window)</span>' : '') + (vs.left < dose * (p.perDay || 1) ? ' <span class="warn">(not enough left for this dose)</span>' : '') + '</p>' : '<p class="kv">No vial logged. Use "Mixed new vial" below.</p>') +
         '<div class="row"><label class="small">Dose ' + (p.unit || 'mg') + ' <input type="number" step="0.05" min="0" value="' + dose + '" data-k="' + key + '" data-f="dose" style="width:80px"></label>' +
         (injectable(p) ? '<label class="small">Site <select data-k="' + key + '" data-f="site">' + SITES.map(function (x) { return '<option' + ((e.site || sugg) === x ? ' selected' : '') + '>' + x + '</option>'; }).join('') + '</select></label>' : '') + '</div>' +
@@ -272,13 +275,15 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
     var h = '';
     S.protocols.forEach(function (p) {
       var r = scheduleFor(p, TODAY), line = '';
-      if (p.cycleOn && p.cycleOff && diffDays(p.start, TODAY) >= 0) {
+      var ends = p.endDate ? ' Final dose ' + nice(p.endDate) + '.' : '';
+      if (p.endDate && TODAY > p.endDate) line = '<p class="small">Completed · final dose was ' + nice(p.endDate) + (p.cycleOff ? '. Washout through ' + nice(addDays(p.endDate, p.cycleOff)) : '') + '</p>';
+      else if (p.cycleOn && p.cycleOff && diffDays(p.start, TODAY) >= 0) {
         var period = p.cycleOn + p.cycleOff, d = diffDays(p.start, TODAY), pos = d % period;
         var on = pos < p.cycleOn, len = on ? p.cycleOn : p.cycleOff, into = on ? pos : pos - p.cycleOn;
-        var nextChange = addDays(TODAY, len - into);
-        line = '<p class="small">' + (on ? 'On-cycle' : 'Washout') + ' · day ' + (into + 1) + ' of ' + len + ' · cycle ' + (Math.floor(d / period) + 1) + '. ' + (on ? 'Washout' : 'Next cycle') + ' starts ' + nice(nextChange) + '</p><div class="bar2"><span style="width:' + ((into + 1) / len * 100) + '%"></span></div>';
-      } else if (diffDays(p.start, TODAY) < 0) line = '<p class="small">Starts ' + nice(p.start) + '</p>';
-      else line = '<p class="small">Continuous (no cycle set)</p>';
+        var nextChange = addDays(TODAY, len - into), cno = Math.floor(d / period) + 1;
+        line = '<p class="small">' + (on ? 'On-cycle' : 'Washout') + ' · day ' + (into + 1) + ' of ' + len + ' · cycle ' + cno + (p.cycles ? ' of ' + p.cycles : '') + '. ' + (on && p.cycles && cno === p.cycles ? 'Final cycle.' : (on ? 'Washout' : 'Next cycle') + ' starts ' + nice(nextChange) + '.') + ends + '</p><div class="bar2"><span style="width:' + ((into + 1) / len * 100) + '%"></span></div>';
+      } else if (diffDays(p.start, TODAY) < 0) line = '<p class="small">Starts ' + nice(p.start) + '.' + ends + '</p>';
+      else line = '<p class="small">' + (p.endDate ? 'Ends ' + nice(p.endDate) : 'Continuous (no cycle set)') + '</p>';
       var nextDose = null;
       for (var i = 0; i < 400 && !nextDose; i++) { var s = addDays(TODAY, i), x = scheduleFor(p, s); if (x && !x.washout && !(S.log[logKey(p, s)] || {}).status) nextDose = [s, x]; }
       var vs = vialStatus(p, TODAY), avg = 0, cnt = 0;
@@ -304,7 +309,7 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
     el.innerHTML = S.protocols.map(function (p) {
       return '<div class="proto" style="border-left:5px solid ' + colorOf(p) + '"><div class="row"><b style="flex:1">' + esc(p.name) + '</b>' +
         (p.route === 'Supplement' ? '' : '<button class="ghost" data-edit="' + p.id + '">Edit</button>') + '<button class="ghost" data-pause="' + p.id + '">' + (p.paused ? 'Resume' : 'Pause') + '</button><button class="danger" data-del="' + p.id + '">Delete</button></div>' +
-        '<p class="small">Start ' + nice(p.start) + ' · ' + (p.weekdays && p.weekdays.length ? p.weekdays.map(function (w) { return WD[w]; }).join('/') : 'every ' + p.intervalDays + ' d') + (injectable(p) ? ' · ' + p.vial.mg + ' ' + (p.unit || 'mg') + ' + ' + p.vial.ml + ' mL (' + f1(p.vial.mg / p.vial.ml) + ' ' + (p.unit || 'mg') + '/mL)' : ' · ' + esc(p.route || '')) + (p.cycleOn ? ' · ' + p.cycleOn + ' d on / ' + p.cycleOff + ' d off' : '') + (p.paused ? ' · <b>paused</b>' : '') + '</p>' +
+        '<p class="small">Start ' + nice(p.start) + ' · ' + (p.weekdays && p.weekdays.length ? p.weekdays.map(function (w) { return WD[w]; }).join('/') : 'every ' + p.intervalDays + ' d') + (injectable(p) ? ' · ' + p.vial.mg + ' ' + (p.unit || 'mg') + ' + ' + p.vial.ml + ' mL (' + f1(p.vial.mg / p.vial.ml) + ' ' + (p.unit || 'mg') + '/mL)' : ' · ' + esc(p.route || '')) + (p.cycleOn ? ' · ' + p.cycleOn + ' d on / ' + p.cycleOff + ' d off' + (p.cycles ? ' × ' + p.cycles : ' (repeating)') : '') + (p.endDate ? ' · final dose ' + nice(p.endDate) : '') + (p.paused ? ' · <b>paused</b>' : '') + '</p>' +
         '<p class="small">' + p.steps.map(function (s) { return s.dose + ' ' + (p.unit || 'mg') + (s.weeks ? ' × ' + s.weeks + ' wk' : ' onward'); }).join(' → ') + (p.template ? ' <span class="muted">(' + esc(p.template) + ')</span>' : '') + '</p>' + (p.note ? '<p class="small muted">' + esc(p.note) + '</p>' : '') +
         '<div class="row"><label class="small">Dose time <input type="time" data-time="' + p.id + '" value="' + doseTime(p) + '"></label></div>' +
         ((byslug[p.slug] && byslug[p.slug].suggest && byslug[p.slug].suggest.length) ? '<p class="small">Paired supplements: ' + byslug[p.slug].suggest.map(function (id) { var s = bySupp[id]; return s ? '<button class="ghost" data-supp="' + id + '" title="' + esc(s.timing) + '">+ ' + esc(s.name.split(' (')[0].split(',')[0]) + ' (' + s.grade + ')</button>' : ''; }).join(' ') + '</p>' : '') + '</div>';
@@ -340,6 +345,11 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
       var tpl = existing && !tplId ? null : (c.templates.find(function (t) { return t.id === tplId; }) || c.templates[0]);
       var steps = tpl ? tpl.steps : existing.steps;
       var cyc = existing && !tplId ? { on: existing.cycleOn, off: existing.cycleOff } : (c.cycle || { on: 0, off: 0 });
+      var copts = c.cycleOptions || [];
+      var mi = copts.findIndex(function (o) { return o.on === cyc.on && o.off === cyc.off; });
+      var cSel = !(cyc.on && cyc.off) ? 'none' : mi >= 0 ? String(mi) : 'custom';
+      // New protocols with a cycle default to one cycle (so they get a final dose day); edits keep their count.
+      var cN = existing && !tplId ? existing.cycles || 0 : (cSel === 'none' ? 0 : 1);
       var vi = existing ? c.vials.findIndex(function (v) { return v.mg === existing.vial.mg && v.ml === existing.vial.ml; }) : (c.primaryVial || 0);
       f.innerHTML = '<div class="proto"><div class="row"><label class="small">Compound <select id="pf-c">' + C.map(function (x) { return '<option value="' + x.slug + '"' + (x.slug === slug ? ' selected' : '') + '>' + esc(x.name) + ' (' + esc(x.siteName) + ')</option>'; }).join('') + '</select></label>' +
         '<label class="small">Template <select id="pf-t">' + c.templates.map(function (t) { return '<option value="' + t.id + '"' + (tpl && tpl.id === t.id ? ' selected' : '') + '>' + esc(t.label) + '</option>'; }).join('') + (existing ? '<option value=""' + (!tpl ? ' selected' : '') + '>Keep current steps</option>' : '') + '</select></label></div>' +
@@ -349,12 +359,40 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
         '<label class="small">Every <input type="number" id="pf-i" min="1" value="' + (existing ? existing.intervalDays : c.intervalDays) + '" style="width:60px"> days</label>' +
         '<span class="small">Days: ' + WD.map(function (w, i) { var on = existing ? (existing.weekdays || []).indexOf(i) >= 0 : ((tpl && tpl.weekdays) || []).indexOf(i) >= 0; return '<label><input type="checkbox" class="pf-wd" value="' + i + '"' + (on ? ' checked' : '') + '>' + w + '</label> '; }).join('') + '<span class="muted">(none = use "Every N days")</span></span></div><div class="row">' +
         '<label class="small">Injections/day <input type="number" id="pf-pd" min="1" max="4" value="' + (existing ? existing.perDay || 1 : (tpl && tpl.perDay) || 1) + '" style="width:50px"></label><label class="small">Vial <select id="pf-v">' + c.vials.map(function (v, i) { return '<option value="' + i + '"' + (i === vi ? ' selected' : '') + '>' + v.mg + ' mg + ' + v.ml + ' mL (' + f1(v.mg / v.ml) + ' mg/mL)</option>'; }).join('') + '</select></label></div>' +
-        '<div class="row"><label class="small">Cycle on <input type="number" id="pf-on" min="0" value="' + (cyc.on || 0) + '" style="width:60px"> days</label><label class="small">off <input type="number" id="pf-off" min="0" value="' + (cyc.off || 0) + '" style="width:60px"> days</label><span class="small muted">' + (c.cycle && c.cycle.note ? esc(c.cycle.note) : '0 = continuous') + '</span></div>' +
+        '<div class="row"><label class="small">Cycle <select id="pf-cyc">' + copts.map(function (o, i) { return '<option value="' + i + '"' + (cSel === String(i) ? ' selected' : '') + '>' + esc(o.label) + '</option>'; }).join('') +
+          '<option value="none"' + (cSel === 'none' ? ' selected' : '') + '>Continuous (no cycle)</option><option value="custom"' + (cSel === 'custom' ? ' selected' : '') + '>Custom…</option></select></label>' +
+          '<label class="small">on <input type="number" id="pf-on" min="0" value="' + (cyc.on || 0) + '" style="width:60px"> days</label><label class="small">off <input type="number" id="pf-off" min="0" value="' + (cyc.off || 0) + '" style="width:60px"> days</label></div>' +
+        '<div class="row"><label class="small" id="pf-cnl">Cycles <select id="pf-cn"><option value="0"' + (!cN ? ' selected' : '') + '>Repeat (no end)</option>' + [1, 2, 3, 4, 5, 6].map(function (n) { return '<option value="' + n + '"' + (cN === n ? ' selected' : '') + '>' + n + '</option>'; }).join('') + '</select></label>' +
+          '<label class="small">Final dose day <input type="date" id="pf-end" value="' + (existing && !tplId ? existing.endDate || '' : '') + '"></label><span class="small muted" id="pf-endtxt"></span></div>' +
+        '<p class="small muted">' + (c.cycle && c.cycle.note ? esc(c.cycle.note) : 'No catalog cycle.') + '</p>' +
+        '<div class="row" id="pf-backrow"><label class="small">Start is in the past: earlier doses <select id="pf-back"><option value="taken">mark as taken</option><option value="none">leave unlogged (show as missed)</option></select></label><span class="small muted">Already-logged days are kept.</span></div>' +
         '<table class="steps-ed"><thead><tr><th>Step</th><th>Dose (mg)</th><th>Weeks (blank = onward)</th><th></th></tr></thead><tbody id="pf-steps">' +
         steps.map(function (s, i) { return stepRow(i, s); }).join('') + '</tbody></table>' +
         '<div class="row"><button class="ghost" id="pf-add">+ Step</button><span style="flex:1"></span><button class="ghost" id="pf-cancel">Cancel</button><button id="pf-save">' + (existing ? 'Save' : 'Add protocol') + '</button></div></div>';
       document.getElementById('pf-c').onchange = function () { existing = null; draw(this.value); };
       document.getElementById('pf-t').onchange = function () { draw(slug, this.value || null); };
+      var $ = function (id) { return document.getElementById(id); };
+      function syncEnd(force) {
+        var on = parseInt($('pf-on').value, 10) || 0, off = parseInt($('pf-off').value, 10) || 0, n = +$('pf-cn').value, cyc = on > 0 && off > 0;
+        $('pf-cnl').style.display = cyc ? '' : 'none';
+        if (cyc && n && $('pf-s').value && (force || !$('pf-end').value)) $('pf-end').value = cycleEnd($('pf-s').value, on, off, n);
+        if (cyc && !n && force) $('pf-end').value = '';
+        var e = $('pf-end').value;
+        $('pf-endtxt').textContent = e ? (cyc && n ? n + ' cycle' + (n > 1 ? 's' : '') + ' · ' + (diffDays($('pf-s').value, e) + 1) + ' days · washout ends ' + nice(addDays(e, off)) : 'Nothing is scheduled after this day.') : (cyc ? 'Repeats until you stop it.' : 'Optional: no end.');
+      }
+      $('pf-cyc').onchange = function () {
+        var v = this.value;
+        if (v === 'none') { $('pf-on').value = 0; $('pf-off').value = 0; $('pf-cn').value = '0'; }
+        else if (v !== 'custom') { $('pf-on').value = copts[+v].on; $('pf-off').value = copts[+v].off; if ($('pf-cn').value === '0') $('pf-cn').value = '1'; }
+        syncEnd(true);
+      };
+      ['pf-on', 'pf-off'].forEach(function (id) { $(id).oninput = function () { $('pf-cyc').value = 'custom'; syncEnd(true); }; });
+      $('pf-cn').onchange = function () { syncEnd(true); };
+      function syncBack() { $('pf-backrow').style.display = $('pf-s').value && $('pf-s').value < TODAY ? '' : 'none'; }
+      $('pf-s').onchange = function () { syncEnd(true); syncBack(); };
+      syncBack();
+      $('pf-end').onchange = function () { syncEnd(false); };
+      syncEnd(false);
       document.getElementById('pf-add').onclick = function () { var tb = document.getElementById('pf-steps'); tb.insertAdjacentHTML('beforeend', stepRow(tb.children.length, { dose: '', weeks: null })); bindRm(); };
       document.getElementById('pf-cancel').onclick = function () { f.classList.add('hide'); f.innerHTML = ''; };
       document.getElementById('pf-save').onclick = function () {
@@ -362,6 +400,8 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
           var ins = tr.querySelectorAll('input'); return { dose: parseFloat(ins[0].value), weeks: ins[1].value === '' ? null : parseInt(ins[1].value, 10) };
         }).filter(function (s) { return s.dose > 0; });
         if (!rows.length) { alert('Add at least one step with a dose.'); return; }
+        var endV = document.getElementById('pf-end').value;
+        if (endV && endV < document.getElementById('pf-s').value) { alert('The final dose day is before the start date.'); return; }
         var v = c.vials[+document.getElementById('pf-v').value];
         var t = document.getElementById('pf-t');
         var p = existing || { id: 'p' + Date.now().toString(36), color: COLORS[S.protocols.length % COLORS.length] };
@@ -371,8 +411,17 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
         p.weekdays = Array.prototype.filter.call(document.querySelectorAll('.pf-wd'), function (x) { return x.checked; }).map(function (x) { return +x.value; }); p.useWithinDays = c.useWithinDays;
         p.cycleOn = parseInt(document.getElementById('pf-on').value, 10) || 0; p.cycleOff = parseInt(document.getElementById('pf-off').value, 10) || 0;
         if (!p.cycleOn || !p.cycleOff) { p.cycleOn = 0; p.cycleOff = 0; }
+        p.cycles = p.cycleOn ? +document.getElementById('pf-cn').value : 0;
+        p.endDate = document.getElementById('pf-end').value || null;
         if (t.value) p.template = t.options[t.selectedIndex].text;
         if (!existing) S.protocols.push(p);
+        // Backdated start: log the past scheduled doses as taken so they don't all read as missed.
+        if (p.start < TODAY && document.getElementById('pf-back').value === 'taken') {
+          for (var bd = p.start; bd < TODAY; bd = addDays(bd, 1)) {
+            var br = scheduleFor(p, bd), bk = logKey(p, bd);
+            if (br && !br.washout && !S.log[bk]) S.log[bk] = { status: 'taken', dose: br.dose, site: '', note: 'Backfilled (start set in the past)', time: '' };
+          }
+        }
         save(); f.classList.add('hide'); f.innerHTML = ''; sel = p.start; view = new Date(parse(p.start)); view = new Date(view.getUTCFullYear(), view.getUTCMonth(), 1); renderAll();
       };
       bindRm();
