@@ -52,6 +52,13 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
   <div>
     <section class="panel"><h2 id="dayTitle">Day</h2><div id="dayBody"></div></section>
     <section class="panel" style="margin-top:14px"><h2>Cycles &amp; vials</h2><div id="status"></div></section>
+    <section class="panel" style="margin-top:14px"><h2>Device calendar &amp; reminders</h2>
+      <p class="small">Download your schedule as a calendar file. Your phone or PC calendar imports it, and each dose becomes an event with a reminder, so notifications fire even when this app is closed. Set each protocol's dose time on its card below.</p>
+      <div class="row"><label class="small">Days ahead <select id="icsDays"><option>14</option><option selected>30</option><option>60</option><option>90</option></select></label>
+        <label class="small">Reminder <select id="icsAlarm"><option value="0" selected>At dose time</option><option value="10">10 min before</option><option value="30">30 min before</option><option value="60">1 hour before</option></select></label></div>
+      <div class="row"><button id="icsBtn">Add to device calendar (.ics)</button></div>
+      <p class="small muted">Includes every active protocol (pause one to leave it out). Re-importing can create duplicates in some calendar apps. Delete the old dosing events first, or import into a dedicated "Dosing" calendar you can clear.</p>
+    </section>
     <section class="panel" style="margin-top:14px"><h2>Backup</h2>
       <p class="small">Data lives only in this browser's local storage. Export a backup now and then.</p>
       <div class="row"><button id="exportBtn">Export JSON</button><label class="small">Import <input type="file" id="importFile" accept="application/json"></label></div>
@@ -98,6 +105,53 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
   function addDays(s, n) { var t = new Date(parse(s) + n * 86400000); return t.getUTCFullYear() + '-' + String(t.getUTCMonth() + 1).padStart(2, '0') + '-' + String(t.getUTCDate()).padStart(2, '0'); }
   function nice(s) { return new Date(parse(s)).toLocaleDateString(undefined, { timeZone: 'UTC', weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }); }
   var TODAY = ds(new Date());
+
+  // ---- dose time: set per protocol; supplements default from their window ----
+  function doseTime(p) {
+    if (p.time) return p.time;
+    var n = (p.note || '').toLowerCase();
+    if (/bed/.test(n)) return '21:30';
+    if (/evening/.test(n)) return '20:00';
+    if (/post-movement|training/.test(n)) return '17:00';
+    if (/midday/.test(n)) return '12:00';
+    return '08:00';
+  }
+
+  // ---- device calendar export (.ics): one event per scheduled dose, with a reminder ----
+  function icsText(s) { return String(s).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n'); }
+  function icsFold(line) { var out = ''; while (line.length > 74) { out += line.slice(0, 74) + '\r\n '; line = line.slice(74); } return out + line; }
+  function icsStamp(dateStr, hhmm, addMin) {
+    var p = dateStr.split('-'), t = hhmm.split(':');
+    var d = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2], +t[0], +t[1] + (addMin || 0)));
+    function z(n) { return String(n).padStart(2, '0'); }
+    // Floating local time (no zone): the event lands at this clock time wherever the device is.
+    return d.getUTCFullYear() + z(d.getUTCMonth() + 1) + z(d.getUTCDate()) + 'T' + z(d.getUTCHours()) + z(d.getUTCMinutes()) + '00';
+  }
+  function buildIcs(days, alarmMin) {
+    var now = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z');
+    var lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Research Dosing//Dosing Calendar//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:Dosing'];
+    var count = 0;
+    for (var i = 0; i < days; i++) {
+      var s = addDays(TODAY, i);
+      S.protocols.forEach(function (p) {
+        if (p.paused) return;
+        var r = scheduleFor(p, s);
+        if (!r || r.washout) return;
+        var dose = r.dose, unit = p.unit || 'mg', t = doseTime(p);
+        var title = p.name + ' · ' + fd(dose) + ' ' + unit + (injectable(p) ? ' (' + f1(units(p, dose)) + ' units)' : '') + ((p.perDay || 1) > 1 ? ' × ' + p.perDay : '');
+        var desc = [fd(dose) + ' ' + unit + (injectable(p) ? ' = ' + f1(units(p, dose)) + ' units / ' + (dose / (p.vial.mg / p.vial.ml)).toFixed(2) + ' mL' : ''),
+          (p.perDay || 1) > 1 ? p.perDay + ' doses today' : '', p.note || '', 'Log it in the Dosing app.'].filter(Boolean).join('\n');
+        lines.push('BEGIN:VEVENT', 'UID:' + p.id + '-' + s + '@research-dosing', 'DTSTAMP:' + now,
+          'DTSTART:' + icsStamp(s, t, 0), 'DTEND:' + icsStamp(s, t, 10),
+          icsFold('SUMMARY:' + icsText(title)), icsFold('DESCRIPTION:' + icsText(desc)),
+          'BEGIN:VALARM', 'ACTION:DISPLAY', 'TRIGGER:' + (alarmMin ? '-PT' + alarmMin + 'M' : 'PT0M'), icsFold('DESCRIPTION:' + icsText(title)), 'END:VALARM',
+          'END:VEVENT');
+        count++;
+      });
+    }
+    lines.push('END:VCALENDAR');
+    return { text: lines.join('\r\n') + '\r\n', count: count };
+  }
 
   // ---- schedule ----
   // Returns null (nothing), {washout:true,...} or {dose, step, week, cycle} for protocol p on date s.
@@ -186,7 +240,7 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
       var key = logKey(p, sel), e = S.log[key] || {}, dose = e.dose != null ? e.dose : r.dose, u = units(p, dose), v = vialOf(p);
       var prevSite = lastSite(p, sel), sugg = prevSite ? SITES[(SITES.indexOf(prevSite) + 1) % SITES.length] : SITES[0];
       var vs = vialStatus(p, sel);
-      body += '<div class="dose-card" style="border-left-color:' + colorOf(p) + '"><h3>' + esc(p.name) + '</h3>' +
+      body += '<div class="dose-card" style="border-left-color:' + colorOf(p) + '"><h3>' + esc(p.name) + ' <span class="muted small">· ' + doseTime(p) + '</span></h3>' +
         '<div class="big">' + fd(dose) + ' ' + (p.unit || 'mg') + (injectable(p) ? ' <span class="muted">= ' + f1(u) + ' units · ' + (dose / (v.mg / v.ml)).toFixed(2) + ' mL</span>' : ' <span class="muted">' + esc(p.route) + '</span>') + '</div>' + ((p.perDay || 1) > 1 ? '<p class="kv"><b>× ' + p.perDay + ' injections today</b> (' + fd(dose * p.perDay) + ' mg total)</p>' : '') +
         (injectable(p) && u > 100 ? '<p class="warn small">Over 100 units: split across two injections.</p>' : '') +
         (p.note ? '<p class="kv">' + esc(p.note) + '</p>' : '') + '<p class="kv">Step ' + (r.step + 1) + ' of ' + p.steps.length + ' · week ' + r.week + (p.cycleOn ? ' · cycle ' + r.cycle + ' (' + p.cycleOn + ' d on)' : '') + (injectable(p) ? ' · ' + v.mg + ' ' + (p.unit || 'mg') + ' vial + ' + v.ml + ' mL' : '') + '</p>' +
@@ -252,8 +306,12 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
         (p.route === 'Supplement' ? '' : '<button class="ghost" data-edit="' + p.id + '">Edit</button>') + '<button class="ghost" data-pause="' + p.id + '">' + (p.paused ? 'Resume' : 'Pause') + '</button><button class="danger" data-del="' + p.id + '">Delete</button></div>' +
         '<p class="small">Start ' + nice(p.start) + ' · ' + (p.weekdays && p.weekdays.length ? p.weekdays.map(function (w) { return WD[w]; }).join('/') : 'every ' + p.intervalDays + ' d') + (injectable(p) ? ' · ' + p.vial.mg + ' ' + (p.unit || 'mg') + ' + ' + p.vial.ml + ' mL (' + f1(p.vial.mg / p.vial.ml) + ' ' + (p.unit || 'mg') + '/mL)' : ' · ' + esc(p.route || '')) + (p.cycleOn ? ' · ' + p.cycleOn + ' d on / ' + p.cycleOff + ' d off' : '') + (p.paused ? ' · <b>paused</b>' : '') + '</p>' +
         '<p class="small">' + p.steps.map(function (s) { return s.dose + ' ' + (p.unit || 'mg') + (s.weeks ? ' × ' + s.weeks + ' wk' : ' onward'); }).join(' → ') + (p.template ? ' <span class="muted">(' + esc(p.template) + ')</span>' : '') + '</p>' + (p.note ? '<p class="small muted">' + esc(p.note) + '</p>' : '') +
+        '<div class="row"><label class="small">Dose time <input type="time" data-time="' + p.id + '" value="' + doseTime(p) + '"></label></div>' +
         ((byslug[p.slug] && byslug[p.slug].suggest && byslug[p.slug].suggest.length) ? '<p class="small">Paired supplements: ' + byslug[p.slug].suggest.map(function (id) { var s = bySupp[id]; return s ? '<button class="ghost" data-supp="' + id + '" title="' + esc(s.timing) + '">+ ' + esc(s.name.split(' (')[0].split(',')[0]) + ' (' + s.grade + ')</button>' : ''; }).join(' ') + '</p>' : '') + '</div>';
     }).join('') || '<p class="muted">No protocols yet.</p>';
+    Array.prototype.forEach.call(el.querySelectorAll('[data-time]'), function (inp) {
+      inp.onchange = function () { var p = S.protocols.find(function (x) { return x.id === inp.getAttribute('data-time'); }); if (p && inp.value) { p.time = inp.value; save(); renderDay(); } };
+    });
     Array.prototype.forEach.call(el.querySelectorAll('[data-supp]'), function (b) { b.onclick = function () { addSupplement(b.getAttribute('data-supp')); }; });
     Array.prototype.forEach.call(el.querySelectorAll('[data-del]'), function (b) {
       b.onclick = function () {
@@ -287,6 +345,7 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
         '<label class="small">Template <select id="pf-t">' + c.templates.map(function (t) { return '<option value="' + t.id + '"' + (tpl && tpl.id === t.id ? ' selected' : '') + '>' + esc(t.label) + '</option>'; }).join('') + (existing ? '<option value=""' + (!tpl ? ' selected' : '') + '>Keep current steps</option>' : '') + '</select></label></div>' +
         (tpl && tpl.note ? '<p class="small muted">' + esc(tpl.note) + '</p>' : '') +
         '<div class="row"><label class="small">Start <input type="date" id="pf-s" value="' + (existing ? existing.start : TODAY) + '"></label>' +
+        '<label class="small">Dose time <input type="time" id="pf-time" value="' + (existing ? doseTime(existing) : '08:00') + '"></label>' +
         '<label class="small">Every <input type="number" id="pf-i" min="1" value="' + (existing ? existing.intervalDays : c.intervalDays) + '" style="width:60px"> days</label>' +
         '<span class="small">Days: ' + WD.map(function (w, i) { var on = existing ? (existing.weekdays || []).indexOf(i) >= 0 : ((tpl && tpl.weekdays) || []).indexOf(i) >= 0; return '<label><input type="checkbox" class="pf-wd" value="' + i + '"' + (on ? ' checked' : '') + '>' + w + '</label> '; }).join('') + '<span class="muted">(none = use "Every N days")</span></span></div><div class="row">' +
         '<label class="small">Injections/day <input type="number" id="pf-pd" min="1" max="4" value="' + (existing ? existing.perDay || 1 : (tpl && tpl.perDay) || 1) + '" style="width:50px"></label><label class="small">Vial <select id="pf-v">' + c.vials.map(function (v, i) { return '<option value="' + i + '"' + (i === vi ? ' selected' : '') + '>' + v.mg + ' mg + ' + v.ml + ' mL (' + f1(v.mg / v.ml) + ' mg/mL)</option>'; }).join('') + '</select></label></div>' +
@@ -307,7 +366,7 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
         var t = document.getElementById('pf-t');
         var p = existing || { id: 'p' + Date.now().toString(36), color: COLORS[S.protocols.length % COLORS.length] };
         p.slug = c.slug; p.name = c.name + ' (' + c.siteName + ')'; p.short = c.siteName;
-        p.start = document.getElementById('pf-s').value; p.intervalDays = Math.max(1, parseInt(document.getElementById('pf-i').value, 10) || 7);
+        p.start = document.getElementById('pf-s').value; p.time = document.getElementById('pf-time').value || '08:00'; p.intervalDays = Math.max(1, parseInt(document.getElementById('pf-i').value, 10) || 7);
         p.route = c.route; p.vial = { mg: v.mg, ml: v.ml }; p.steps = rows; p.perDay = Math.max(1, parseInt(document.getElementById('pf-pd').value, 10) || 1); p.unit = c.unit || 'mg';
         p.weekdays = Array.prototype.filter.call(document.querySelectorAll('.pf-wd'), function (x) { return x.checked; }).map(function (x) { return +x.value; }); p.useWithinDays = c.useWithinDays;
         p.cycleOn = parseInt(document.getElementById('pf-on').value, 10) || 0; p.cycleOff = parseInt(document.getElementById('pf-off').value, 10) || 0;
@@ -338,6 +397,20 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
     pick.value = '';
   };
   document.getElementById('addBtn').onclick = function () { openForm(null, location.hash.slice(1)); };
+  document.getElementById('icsBtn').onclick = function () {
+    var res = buildIcs(+document.getElementById('icsDays').value, +document.getElementById('icsAlarm').value);
+    if (!res.count) { alert('Nothing scheduled in that window. Add or resume a protocol first.'); return; }
+    var name = 'dosing-' + TODAY + '.ics';
+    if (navigator.standalone) {
+      // iPhone home-screen app: blob downloads are unreliable there; a data URL opens Calendar's import sheet.
+      window.location.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(res.text);
+    } else {
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([res.text], { type: 'text/calendar;charset=utf-8' }));
+      a.download = name; a.click();
+    }
+    setTimeout(function () { alert(res.count + ' dose events exported. Open the file to add them to your calendar.'); }, 300);
+  };
   document.getElementById('exportBtn').onclick = function () {
     var a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([JSON.stringify(S, null, 2)], { type: 'application/json' }));
