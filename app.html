@@ -2,13 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Dosing Calendar</title>
 <link rel="stylesheet" href="poster.css">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem('rds-theme')||'light'}catch(e){document.documentElement.dataset.theme='light'}</script>
 <style>
 .app{max-width:1200px;margin:14px auto;padding:0 12px;display:grid;grid-template-columns:1.55fr 1fr;gap:14px}
 @media (max-width:900px){.app{grid-template-columns:1fr}}
+/* Desktop: calendar spans the full width; the other panels sit two-up underneath. */
+@media (min-width:761px){.app{max-width:1400px;grid-template-columns:1fr 1fr}.app>div{display:contents}.panel{margin-top:0 !important}
+  #calPanel{grid-column:1/-1;order:0}#dayPanel{order:1}#protPanel{order:2}.app [data-tab="cyc"]{order:3}.app [data-tab="stock"]{order:3}.app [data-tab="more"]{order:4}
+  .day{min-height:104px}.chip{font-size:.74rem;padding:2px 6px}}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
 .panel h2{margin:0 0 10px;font-size:.95rem;color:var(--blue);text-transform:uppercase;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .calhead{display:flex;align-items:center;gap:8px;margin-bottom:8px}.calhead h2{margin:0;flex:1}
@@ -31,41 +36,101 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
 .steps-ed td input{width:76px}.warn{color:var(--red);font-weight:600}.okc{color:#1f7a3d;font-weight:600}
 .bar2{height:8px;border-radius:4px;background:var(--line);overflow:hidden}.bar2>span{display:block;height:100%;background:linear-gradient(90deg,var(--bar1),var(--bar2))}
 .small{font-size:.78rem}.hide{display:none}
+.todaybar{display:none}
+.flyout{position:fixed;z-index:41;margin:0 !important;overflow-y:auto;overscroll-behavior:contain;visibility:hidden;transition:transform .25s ease,visibility 0s linear .25s;box-shadow:0 10px 40px rgba(60,20,40,.25)}
+.flyout.open{visibility:visible;transform:none !important;transition:transform .25s ease}
+.flyhead{display:flex;align-items:center;gap:8px;position:sticky;top:-12px;background:var(--card);padding:4px 0 8px;margin-top:-4px;z-index:1}.flyhead h2{flex:1;margin:0}
+#dayClose{min-width:40px;min-height:40px;font-size:1rem}
+.backdrop{position:fixed;inset:0;z-index:40;background:rgba(40,20,30,.35);opacity:0;pointer-events:none;transition:opacity .2s}.backdrop.open{opacity:1;pointer-events:auto}
+@media (min-width:761px){.flyout{top:0;right:0;bottom:0;width:min(460px,100vw);border-radius:18px 0 0 18px !important;transform:translateX(105%)}}
+@media (max-width:760px){.flyout{left:0;right:0;bottom:0;max-height:86vh;border-radius:20px 20px 0 0 !important;padding-bottom:calc(16px + env(safe-area-inset-bottom)) !important;transform:translateY(105%)}
+  .flyout::before{content:"";display:block;width:42px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 8px}}
+.installbtn{background:var(--blue) !important;color:#fff !important;border-radius:20px !important;padding:6px 14px;font-weight:700;white-space:nowrap;flex:0 0 auto}.installbtn.hide{display:none}
+#installHelp{position:fixed;inset:auto 12px calc(80px + env(safe-area-inset-bottom)) 12px;z-index:45;max-width:440px;margin:0 auto}
+.ghostlink{display:inline-flex;align-items:center;min-height:34px;padding:4px 12px;border:1px solid var(--line);border-radius:20px;text-decoration:none;font-size:.85rem;font-weight:600;color:var(--blue)}
+.backupnag{background:color-mix(in srgb,var(--blue) 10%,var(--card));border-radius:10px;padding:6px 10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}.backupnag.hide{display:none}
+.tabbar{display:none}
+@media (max-width:760px){
+  body{padding-bottom:calc(70px + env(safe-area-inset-bottom))}
+  .app{margin:8px auto;padding:0 10px;gap:10px;grid-template-columns:minmax(0,1fr)}.app>div{display:contents}
+  select{max-width:100%}#protoForm label{max-width:100%}#protoForm select{width:100%}
+  #calPanel{order:1}#dayPanel{order:2}
+  .todaybar:not(.hide){display:flex;width:100%;justify-content:space-between;align-items:center;margin:0 0 8px;padding:10px 14px;border-radius:12px !important;font-weight:700;min-height:44px}
+  .todaybar.done{background:color-mix(in srgb,var(--green) 18%,var(--card)) !important;color:var(--ink)}
+  /* Calendar runs edge to edge on phones */
+  #calPanel{margin-left:-10px !important;margin-right:-10px !important;border-radius:0 !important;border-left:0;border-right:0;padding:10px 3px 8px}
+  #calPanel .calhead{padding:0 8px}#calPanel .note{padding:0 8px}
+  #calPanel .grid7{gap:2px}#calPanel .day{min-height:58px;border-radius:8px !important}
+  body:not([data-tab="cal"]) [data-tab="cal"],body:not([data-tab="prot"]) [data-tab="prot"],body:not([data-tab="cyc"]) [data-tab="cyc"],body:not([data-tab="more"]) [data-tab="more"],body:not([data-tab="stock"]) [data-tab="stock"]{display:none}
+  .panel{margin-top:0 !important;padding:12px}
+  .grid7{gap:3px}.day{min-height:50px;padding:3px;border-radius:10px !important}.day .n{font-size:.8rem}
+  .chip{display:inline-block;width:8px;height:8px;padding:0;margin:2px 1px 0;font-size:0;border-radius:50% !important;vertical-align:top}
+  .day.dosed{background:color-mix(in srgb,var(--blue) 9%,var(--card));border-color:color-mix(in srgb,var(--blue) 30%,var(--line))}
+  .chip.missed{border-width:1.5px}.chip.taken{opacity:.55}.wlabel{display:none}
+  .calhead h2{font-size:1rem}.calhead button{min-width:40px}
+  button,select,input{font-size:16px;min-height:40px}input[type=checkbox]{min-height:0;width:20px;height:20px}
+  .row{gap:10px}.big{font-size:1.35rem}.dose-card{padding:12px}
+  .steps-ed{width:100%}.steps-ed td input{width:100%}
+  #protPanel h2{flex-direction:column;align-items:stretch}#protPanel h2 select,#protPanel h2 button{width:100%}
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--card);border-top:1px solid var(--line);box-shadow:0 -4px 18px rgba(20,33,92,.08);padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
+  .tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;background:none !important;color:var(--muted);font-size:.68rem;font-weight:700;padding:4px 0;border-radius:12px !important;min-height:0}
+  .tabbar svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .tabbar button.on{color:var(--blue);background:color-mix(in srgb,var(--blue) 10%,transparent) !important}
+  .brandfoot{display:none}
+}
 </style>
-<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#14215c"><link rel="icon" href="icon.svg"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Dosing"><script>if('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) navigator.serviceWorker.register('sw.js');</script></head>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#14215c"><link rel="icon" href="icon.svg"><link rel="apple-touch-icon" href="icon-512.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Dosing"><script>if('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) navigator.serviceWorker.register('sw.js');</script></head>
 <body>
-<nav class="topnav" id="nav"><button class="themebtn" onclick="var r=document.documentElement,t=r.dataset.theme==='dark'?'light':'dark';r.dataset.theme=t;try{localStorage.setItem('rds-theme',t)}catch(e){}">◐</button><a href="index.html">All compounds</a><a class="on" href="app.html">Dosing calendar</a></nav>
+<nav class="topnav" id="nav"><button class="installbtn hide" id="installBtn">⤓ Install app</button><button class="themebtn" onclick="var r=document.documentElement,t=r.dataset.theme==='dark'?'light':'dark';r.dataset.theme=t;try{localStorage.setItem('rds-theme',t)}catch(e){}">◐</button><a href="index.html">All compounds</a><a class="on" href="app.html">Dosing calendar</a></nav>
 <div class="app">
   <div>
-    <section class="panel">
+    <section class="panel" data-tab="cal" id="calPanel">
       <div class="calhead"><button class="ghost" id="prev">‹</button><h2 id="monthTitle"></h2><button class="ghost" id="today">Today</button><button class="ghost" id="next">›</button></div>
+      <p class="small backupnag hide" id="backupNag"></p>
+      <button class="todaybar hide" id="todayBar"></button>
       <div class="grid7" id="dows"></div>
       <div class="grid7" id="cal"></div>
-      <p class="note">Hatched days are cycle washout. Doses come from the protocols below; units are computed for the vial each protocol uses.</p>
+      <p class="note">Hatched days are cycle washout. Doses come from your protocols; units are computed for the vial each protocol uses.</p>
     </section>
-    <section class="panel" style="margin-top:14px">
+    <section class="panel" data-tab="prot" id="protPanel" style="margin-top:14px">
       <h2>Protocols <button id="addBtn">+ Add protocol</button> <select id="suppPick" aria-label="Add a supplement"><option value="">+ Add a supplement…</option></select></h2>
       <div id="protoForm" class="hide"></div>
       <div id="protos"></div>
     </section>
   </div>
   <div>
-    <section class="panel"><h2 id="dayTitle">Day</h2><div id="dayBody"></div></section>
-    <section class="panel" style="margin-top:14px"><h2>Cycles &amp; vials</h2><div id="status"></div></section>
-    <section class="panel" style="margin-top:14px"><h2>Device calendar &amp; reminders</h2>
+    <section class="panel flyout" id="dayPanel" role="dialog" aria-modal="true" aria-labelledby="dayTitle" aria-hidden="true"><div class="flyhead"><h2 id="dayTitle">Day</h2><button class="ghost" id="dayClose" aria-label="Close">✕</button></div><div id="dayBody"></div></section>
+    <div class="backdrop" id="dayBackdrop"></div>
+    <section class="panel" data-tab="cyc" style="margin-top:14px"><h2>Cycles &amp; vials</h2><div id="status"></div></section>
+    <section class="panel" data-tab="stock" id="stockPanel" style="margin-top:14px"><h2>Stock <button id="stToggle">+ Add item</button></h2>
+      <div class="proto hide" id="stForm"><b class="small">Add to stock</b>
+        <div class="row"><label class="small" style="flex:1 1 100%;min-width:0">Item <select id="stItem" style="width:100%"></select></label><input id="stName" placeholder="Name" class="hide" style="flex:1 1 160px"></div>
+        <div class="row"><label class="small"><span id="stSizeL">Size</span> <input type="number" id="stSize" min="0" step="any" style="width:80px"> <span id="stUnit">mg</span></label><label class="small"><span id="stQtyL">Qty</span> <input type="number" id="stQty" min="0" value="1" style="width:60px"></label><label class="small hide" id="stUseL">Used per injection <input type="number" id="stUse" min="1" value="1" style="width:50px"></label><label class="small">Expires <input type="date" id="stExp"></label></div>
+        <div class="row"><input id="stNote" placeholder="Note (lot, supplier…)" style="flex:1"><button class="ghost" id="stCancel">Done</button><button id="stAdd">Add</button></div>
+      </div>
+      <div id="stock"></div>
+    </section>
+    <section class="panel" data-tab="more" style="margin-top:14px"><h2>Device calendar &amp; reminders</h2>
       <p class="small">Download your schedule as a calendar file. Your phone or PC calendar imports it, and each dose becomes an event with a reminder, so notifications fire even when this app is closed. Set each protocol's dose time on its card below.</p>
       <div class="row"><label class="small">Days ahead <select id="icsDays"><option>14</option><option selected>30</option><option>60</option><option>90</option></select></label>
         <label class="small">Reminder <select id="icsAlarm"><option value="0" selected>At dose time</option><option value="10">10 min before</option><option value="30">30 min before</option><option value="60">1 hour before</option></select></label></div>
       <div class="row"><button id="icsBtn">Add to device calendar (.ics)</button></div>
       <p class="small muted">Includes every active protocol (pause one to leave it out). Re-importing can create duplicates in some calendar apps. Delete the old dosing events first, or import into a dedicated "Dosing" calendar you can clear.</p>
     </section>
-    <section class="panel" style="margin-top:14px"><h2>Backup</h2>
+    <section class="panel" data-tab="more" style="margin-top:14px"><h2>Backup</h2>
       <p class="small">Data lives only in this browser's local storage. Export a backup now and then.</p>
       <div class="row"><button id="exportBtn">Export JSON</button><label class="small">Import <input type="file" id="importFile" accept="application/json"></label></div>
       <p class="small warn" id="storeWarn"></p>
     </section>
   </div>
 </div>
+<nav class="tabbar" id="tabbar" aria-label="Sections">
+  <button data-go="cal" class="on"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Calendar</button>
+  <button data-go="prot"><svg viewBox="0 0 24 24"><path d="m18 2 4 4M15 5l4 4M17 7l-9 9-3 1 1-3 9-9M7 17l-4 4"/></svg>Protocols</button>
+  <button data-go="cyc"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7M21 4v5h-5"/></svg>Cycles</button>
+  <button data-go="stock"><svg viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5zM3 8l9 5 9-5M12 13v8"/></svg>Stock</button>
+  <button data-go="more"><svg viewBox="0 0 24 24"><path d="M12 22a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2zM18 16V11a6 6 0 0 0-12 0v5l-2 2h16z"/></svg>More</button>
+</nav>
 <script src="compounds.js"></script>
 <script>
 (function () {
@@ -79,17 +144,19 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
   function addSupplement(id, quiet) {
     var s = bySupp[id]; if (!s) return;
     if (S.protocols.some(function (p) { return p.slug === 'supp:' + id; })) { if (!quiet) alert(s.name + ' is already in your protocols.'); return; }
-    S.protocols.push({ id: 'p' + Date.now().toString(36), slug: 'supp:' + id, name: s.name, short: s.name.split(' (')[0], route: 'Supplement', unit: s.unit, note: s.timing + ' · evidence ' + s.grade,
+    S.protocols.push({ id: newId(), slug: 'supp:' + id, name: s.name, short: s.name.split(' (')[0], route: 'Supplement', unit: s.unit, note: s.timing + ' · evidence ' + s.grade,
       start: TODAY, intervalDays: 1, weekdays: s.weekdays || [], vial: { mg: 1, ml: 1 }, steps: [{ dose: s.dose, weeks: null }], cycleOn: 0, cycleOff: 0, perDay: s.perDay || 1, color: s.seed ? '#6d4c9c' : '#00838f' });
     if (!quiet) { save(); renderAll(); }
   }
+  var idSeq = 0;
+  function newId() { return 'p' + Date.now().toString(36) + (idSeq++).toString(36) + Math.random().toString(36).slice(2, 5); }
   var SITES = ['Abdomen L', 'Abdomen R', 'Thigh L', 'Thigh R', 'Arm L', 'Arm R'];
 
   // ---- storage (wrapped: may be unavailable in private windows / previews) ----
   var memory = null;
   function load() {
     try { var s = localStorage.getItem(KEY); if (s) return JSON.parse(s); } catch (e) { warnStore(); }
-    return memory || { protocols: [], log: {}, vials: [] };
+    return memory || { protocols: [], log: {}, vials: [], stock: [] };
   }
   function save() {
     memory = S;
@@ -97,6 +164,9 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
   }
   function warnStore() { document.getElementById('storeWarn').textContent = 'Browser storage is unavailable. Changes will be lost when you close this tab. Export a backup.'; }
   var S = load();
+  S.stock = S.stock || [];
+  // Repair: earlier builds gave every Seed-stack item the same id (deleting one deleted all).
+  (function () { var seen = {}; S.protocols.forEach(function (p) { if (seen[p.id]) p.id = newId(); seen[p.id] = 1; }); })();
 
   // ---- dates (calendar math on UTC midnight, so DST never shifts a day) ----
   function ds(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
@@ -119,7 +189,7 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
 
   // ---- device calendar export (.ics): one event per scheduled dose, with a reminder ----
   function icsText(s) { return String(s).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n'); }
-  function icsFold(line) { var out = ''; while (line.length > 74) { out += line.slice(0, 74) + '\r\n '; line = line.slice(74); } return out + line; }
+  function icsFold(line) { var out = '', cur = '', bytes = 0; for (var i = 0; i < line.length; i++) { var ch = line[i], nb = unescape(encodeURIComponent(ch)).length; if (bytes + nb > 73) { out += cur + '\r\n '; cur = ''; bytes = 1; } cur += ch; bytes += nb; } return out + cur; }
   function icsStamp(dateStr, hhmm, addMin) {
     var p = dateStr.split('-'), t = hhmm.split(':');
     var d = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2], +t[0], +t[1] + (addMin || 0)));
@@ -157,7 +227,9 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
   // Returns null (nothing), {washout:true,...} or {dose, step, week, cycle} for protocol p on date s.
   function scheduleFor(p, s) {
     var d = diffDays(p.start, s);
-    if (d < 0 || p.paused || (p.endDate && s > p.endDate)) return null;
+    if (d < 0 || (p.endDate && s > p.endDate)) return null;
+    if (p.paused && (!p.pausedAt || s >= p.pausedAt)) return null;
+    if (p.pauses && p.pauses.some(function (r) { return s >= r[0] && s <= r[1]; })) return null;
     var inPhase = d, cycleNo = 1;
     if (p.cycleOn && p.cycleOff) {
       var period = p.cycleOn + p.cycleOff;
@@ -170,7 +242,9 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
     var week = Math.floor(inPhase / 7), acc = 0;
     for (var i = 0; i < p.steps.length; i++) {
       var st = p.steps[i];
-      if (st.weeks == null || week < acc + st.weeks) return { dose: st.dose, step: i, week: week + 1, cycle: cycleNo };
+      // With a cycle, the last step runs to the end of the on-phase (a ladder shorter than the cycle used to leave blank weeks).
+      var lastInCycle = i === p.steps.length - 1 && p.cycleOn && p.cycleOff;
+      if (st.weeks == null || lastInCycle || week < acc + st.weeks) return { dose: st.dose, step: i, week: week + 1, cycle: cycleNo };
       acc += st.weeks;
     }
     return null; // protocol ended
@@ -191,12 +265,12 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
     if (!vs.length) return null;
     var cur = vs[0];
     var next = S.vials.filter(function (v) { return v.proto === p.id && v.mixed > cur.mixed; }).map(function (v) { return v.mixed; }).sort()[0] || '9999-12-31';
-    var used = 0;
+    var used = 0, n = 0;
     Object.keys(S.log).forEach(function (k) {
       var parts = k.split('|'), e = S.log[k];
-      if (parts[0] === p.id && e.status === 'taken' && parts[1] >= cur.mixed && parts[1] < next) used += e.dose * (p.perDay || 1);
+      if (parts[0] === p.id && e.status === 'taken' && parts[1] >= cur.mixed && parts[1] < next) { var pd = e.perDay || p.perDay || 1; used += e.dose * pd; n += pd; }
     });
-    return { vial: cur, used: used, left: cur.mg - used, age: diffDays(cur.mixed, s) };
+    return { vial: cur, used: used, left: cur.mg - used, age: diffDays(cur.mixed, s), doses: n };
   }
 
   // ---- calendar ----
@@ -209,21 +283,22 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
     var first = new Date(view.getFullYear(), view.getMonth(), 1), start = ds(first);
     var lead = first.getDay(), html = '';
     for (var i = -lead; i < 42 - lead; i++) {
-      var s = addDays(start, i), m = +s.slice(5, 7) - 1, chips = '', wash = false, wl = '';
+      var s = addDays(start, i), m = +s.slice(5, 7) - 1, chips = '', wash = false, wl = '', dosed = false;
       S.protocols.forEach(function (p) {
         var r = scheduleFor(p, s);
         if (!r) return;
         if (r.washout) { wash = true; if (r.washDay === 1) wl = '<span class="wlabel">Washout begins</span>'; return; }
         if (s === p.endDate) wl = '<span class="wlabel">' + esc(p.short) + ' final dose</span>';
+        dosed = true;
         var e = S.log[logKey(p, s)], cls = e ? e.status : (s < TODAY ? 'missed' : '');
         var dose = e && e.dose != null ? e.dose : r.dose;
         var label = (S.protocols.length > 1 ? esc(p.short) + ' ' : '') + fd(dose) + ' ' + (p.unit || 'mg') + (injectable(p) ? ' · ' + f1(units(p, dose)) + 'u' : '');
         chips += '<span class="chip ' + cls + '" style="background:' + colorOf(p) + '" title="' + esc(p.name) + (cls === 'missed' ? ' (not logged)' : '') + '">' + (cls === 'taken' ? '✓ ' : cls === 'missed' ? '! ' : '') + label + '</span>';
       });
-      html += '<div class="day' + (m !== view.getMonth() ? ' out' : '') + (s === TODAY ? ' today' : '') + (s === sel ? ' sel' : '') + (wash ? ' wash' : '') + '" data-d="' + s + '"><span class="n">' + (+s.slice(8)) + '</span>' + chips + wl + '</div>';
+      html += '<div class="day' + (m !== view.getMonth() ? ' out' : '') + (s === TODAY ? ' today' : '') + (s === sel ? ' sel' : '') + (wash ? ' wash' : '') + (dosed ? ' dosed' : '') + '" data-d="' + s + '"><span class="n">' + (+s.slice(8)) + '</span>' + chips + wl + '</div>';
     }
     var cal = document.getElementById('cal'); cal.innerHTML = html;
-    Array.prototype.forEach.call(cal.children, function (el) { el.onclick = function () { sel = el.getAttribute('data-d'); renderAll(); }; });
+    Array.prototype.forEach.call(cal.children, function (el) { el.onclick = function () { openDay(el.getAttribute('data-d')); }; });
   }
 
   // ---- day panel ----
@@ -232,6 +307,8 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
     Object.keys(S.log).forEach(function (k) { var pr = k.split('|'); if (pr[0] === p.id && pr[1] < before && S.log[k].site && (!best || pr[1] > best[0])) best = [pr[1], S.log[k].site]; });
     return best && best[1];
   }
+  function protoOf(k) { var id = k.split('|')[0]; return S.protocols.find(function (x) { return x.id === id; }); }
+  function bigLine(p, dose) { var v = vialOf(p); return fd(dose) + ' ' + (p.unit || 'mg') + (injectable(p) ? ' <span class="muted">= ' + f1(units(p, dose)) + ' units · ' + (dose / (v.mg / v.ml)).toFixed(2) + ' mL</span>' : ' <span class="muted">' + esc(p.route) + '</span>'); }
   function renderDay() {
     document.getElementById('dayTitle').textContent = nice(sel) + (sel === TODAY ? ' · Today' : '');
     var body = '', any = false;
@@ -244,10 +321,10 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
       var prevSite = lastSite(p, sel), sugg = prevSite ? SITES[(SITES.indexOf(prevSite) + 1) % SITES.length] : SITES[0];
       var vs = vialStatus(p, sel);
       body += '<div class="dose-card" style="border-left-color:' + colorOf(p) + '"><h3>' + esc(p.name) + ' <span class="muted small">· ' + doseTime(p) + '</span></h3>' +
-        '<div class="big">' + fd(dose) + ' ' + (p.unit || 'mg') + (injectable(p) ? ' <span class="muted">= ' + f1(u) + ' units · ' + (dose / (v.mg / v.ml)).toFixed(2) + ' mL</span>' : ' <span class="muted">' + esc(p.route) + '</span>') + '</div>' + ((p.perDay || 1) > 1 ? '<p class="kv"><b>× ' + p.perDay + ' injections today</b> (' + fd(dose * p.perDay) + ' mg total)</p>' : '') +
+        '<div class="big">' + bigLine(p, dose) + '</div>' + ((p.perDay || 1) > 1 ? '<p class="kv"><b>× ' + p.perDay + ' injections today</b> (' + fd(dose * p.perDay) + ' ' + (p.unit || 'mg') + ' total)</p>' : '') +
         (injectable(p) && u > 100 ? '<p class="warn small">Over 100 units: split across two injections.</p>' : '') +
         (p.note ? '<p class="kv">' + esc(p.note) + '</p>' : '') + '<p class="kv">Step ' + (r.step + 1) + ' of ' + p.steps.length + ' · week ' + r.week + (p.cycleOn ? ' · cycle ' + r.cycle + (p.cycles ? ' of ' + p.cycles : '') + ' (' + p.cycleOn + ' d on)' : '') + (sel === p.endDate ? ' · <b>final dose</b>' : '') + (injectable(p) ? ' · ' + v.mg + ' ' + (p.unit || 'mg') + ' vial + ' + v.ml + ' mL' : '') + '</p>' +
-        (!injectable(p) ? '' : vs ? '<p class="kv">Vial: ' + fd(vs.left) + ' ' + (p.unit || 'mg') + ' left · mixed ' + vs.age + ' d ago' + (p.useWithinDays && vs.age > p.useWithinDays ? ' <span class="warn">(past the catalog\'s ' + p.useWithinDays + '-day window)</span>' : '') + (vs.left < dose * (p.perDay || 1) ? ' <span class="warn">(not enough left for this dose)</span>' : '') + '</p>' : '<p class="kv">No vial logged. Use "Mixed new vial" below.</p>') +
+        (!injectable(p) ? '' : vs ? '<p class="kv">Vial: ' + fd(vs.left) + ' ' + (p.unit || 'mg') + ' left · ' + vs.doses + ' dose' + (vs.doses === 1 ? '' : 's') + ' taken · mixed ' + nice(vs.vial.mixed) + ' (' + vs.age + ' d ago)' + (p.useWithinDays && vs.age > p.useWithinDays ? ' <span class="warn">(past the catalog\'s ' + p.useWithinDays + '-day window)</span>' : '') + (vs.left < dose * (p.perDay || 1) ? ' <span class="warn">(not enough left for this dose)</span>' : '') + '</p>' : '<p class="kv">No vial logged yet: log one on the Cycles tab.</p>') +
         '<div class="row"><label class="small">Dose ' + (p.unit || 'mg') + ' <input type="number" step="0.05" min="0" value="' + dose + '" data-k="' + key + '" data-f="dose" style="width:80px"></label>' +
         (injectable(p) ? '<label class="small">Site <select data-k="' + key + '" data-f="site">' + SITES.map(function (x) { return '<option' + ((e.site || sugg) === x ? ' selected' : '') + '>' + x + '</option>'; }).join('') + '</select></label>' : '') + '</div>' +
         '<div class="row"><input placeholder="Note" value="' + esc(e.note || '') + '" data-k="' + key + '" data-f="note" style="flex:1"></div>' +
@@ -257,15 +334,26 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
     });
     var el = document.getElementById('dayBody');
     el.innerHTML = any ? body : '<p class="muted">Nothing scheduled.</p>';
+    Array.prototype.forEach.call(el.querySelectorAll('input[data-f="dose"]'), function (inp) {
+      inp.oninput = function () { var p = protoOf(inp.getAttribute('data-k')), d = parseFloat(inp.value) || 0, big = inp.closest('.dose-card').querySelector('.big'); if (p && big) big.innerHTML = bigLine(p, d); };
+    });
+    Array.prototype.forEach.call(el.querySelectorAll('[data-f="site"],[data-f="note"]'), function (x) {
+      x.onchange = function () { var e = S.log[x.getAttribute('data-k')]; if (e) { e[x.getAttribute('data-f')] = x.value; save(); } };
+    });
     Array.prototype.forEach.call(el.querySelectorAll('[data-act]'), function (b) {
       b.onclick = function () {
         var k = b.getAttribute('data-k'), act = b.getAttribute('data-act');
-        if (act === 'clear') { delete S.log[k]; save(); renderAll(); return; }
+        var prev = S.log[k], p0 = protoOf(k), day = k.split('|')[1], inj = p0 && injectable(p0), padBefore = anyTakenInj(day);
+        var wasTaken = prev && prev.status === 'taken' ? (prev.perDay || (p0 && p0.perDay) || 1) : 0;
+        if (act === 'clear') { delete S.log[k]; if (inj) useSupplies(-wasTaken, (anyTakenInj(day) ? 1 : 0) - (padBefore ? 1 : 0)); save(); renderAll(); return; }
         var e = S.log[k] || {};
         var inp = el.querySelector('input[data-k="' + k + '"][data-f="dose"]'), site = el.querySelector('select[data-k="' + k + '"]'), note = el.querySelector('input[data-k="' + k + '"][data-f="note"]');
         e.status = act; e.dose = parseFloat(inp.value) || parseFloat(b.getAttribute('data-dose'));
-        e.site = site.value; e.note = note.value; e.time = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-        S.log[k] = e; save(); renderAll();
+        e.site = site ? site.value : ''; e.note = note ? note.value : ''; e.perDay = p0.perDay || 1;
+        e.time = k.split('|')[1] === TODAY ? new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) : '';
+        S.log[k] = e;
+        if (inj) useSupplies((act === 'taken' ? e.perDay : 0) - wasTaken, (anyTakenInj(day) ? 1 : 0) - (padBefore ? 1 : 0));
+        save(); renderAll();
       };
     });
   }
@@ -290,17 +378,55 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
       p.steps.forEach(function (st) { avg += st.dose; cnt++; });
       h += '<div class="proto" style="border-left:5px solid ' + colorOf(p) + '"><b>' + esc(p.name) + '</b>' + line +
         (nextDose ? '<p class="small">Next dose: <b>' + nice(nextDose[0]) + '</b> · ' + fd(nextDose[1].dose) + ' ' + (p.unit || 'mg') + (injectable(p) ? ' (' + f1(units(p, nextDose[1].dose)) + ' units)' : '') + '</p>' : '<p class="small">No upcoming doses (protocol ended or paused).</p>') +
-        (injectable(p) && vs ? '<p class="small">Vial: ' + fd(vs.left) + ' of ' + vs.vial.mg + ' ' + (p.unit || 'mg') + ' left · ' + vs.age + ' d since mixing' + (p.useWithinDays && vs.age > p.useWithinDays ? ' <span class="warn">past the catalog window</span>' : '') + '</p><div class="bar2"><span style="width:' + Math.max(0, vs.left / vs.vial.mg * 100) + '%"></span></div>' : '') +
-        (injectable(p) ? '<div class="row"><label class="small">Mixed new vial on <input type="date" value="' + TODAY + '" id="mix-' + p.id + '"></label><button class="ghost" data-mix="' + p.id + '">Log vial</button></div>' : '') + '</div>';
+        (injectable(p) && vs ? '<p class="small">Vial: ' + fd(vs.left) + ' of ' + vs.vial.mg + ' ' + (p.unit || 'mg') + ' left · ' + vs.doses + ' dose' + (vs.doses === 1 ? '' : 's') + ' taken · mixed ' + nice(vs.vial.mixed) + ' · ' + vs.age + ' d since mixing' + (p.useWithinDays && vs.age > p.useWithinDays ? ' <span class="warn">past the catalog window</span>' : '') + '</p><div class="bar2"><span style="width:' + Math.max(0, vs.left / vs.vial.mg * 100) + '%"></span></div>' : '') +
+        (injectable(p) && vs ? '<div class="row"><label class="small">Current vial mixed <input type="date" value="' + vs.vial.mixed + '" id="cur-' + p.id + '"></label><button class="ghost" data-vupd="' + p.id + '" data-vi="' + S.vials.indexOf(vs.vial) + '">Save date</button><label class="small"><input type="checkbox" id="curtk-' + p.id + '" checked> count doses since then as taken</label><button class="ghost" data-vdel="' + p.id + '" data-vi="' + S.vials.indexOf(vs.vial) + '">Remove</button></div>' : '') +
+        (injectable(p) ? '<div class="row"><label class="small">Log a new vial mixed on <input type="date" value="' + TODAY + '" id="mix-' + p.id + '"></label><label class="small"><input type="checkbox" id="mixtk-' + p.id + '" checked> mark scheduled doses since then as taken</label>' + (stockQty(p) ? '<label class="small"><input type="checkbox" id="mixst-' + p.id + '" checked> take 1 from stock (' + stockQty(p) + ' on hand)</label>' : '') + '<button class="ghost" data-mix="' + p.id + '">Log vial</button></div>' : '') + '</div>';
     });
     var el = document.getElementById('status');
     el.innerHTML = h || '<p class="muted">Add a protocol to start tracking.</p>';
     Array.prototype.forEach.call(el.querySelectorAll('[data-mix]'), function (b) {
       b.onclick = function () {
         var p = S.protocols.find(function (x) { return x.id === b.getAttribute('data-mix'); });
-        S.vials.push({ proto: p.id, mixed: document.getElementById('mix-' + p.id).value, mg: p.vial.mg, ml: p.vial.ml }); save(); renderAll();
+        var mixed = document.getElementById('mix-' + p.id).value;
+        if (!mixed) return;
+        if (mixed > TODAY) { alert('The mix date cannot be in the future.'); return; }
+        S.vials.push({ proto: p.id, mixed: mixed, mg: p.vial.mg, ml: p.vial.ml });
+        var filled = backfillSince(p, mixed, 'mixtk-'), took = '';
+        var useBox = document.getElementById('mixst-' + p.id), it = stockFor(p).filter(function (x) { return x.qty > 0; })[0];
+        if (it && useBox && useBox.checked) { it.qty--; took = ' Took 1 from stock (' + it.qty + ' left).'; }
+        save(); renderAll();
+        alert('Vial logged, mixed ' + nice(mixed) + '.' + (filled ? ' ' + filled + ' scheduled dose' + (filled === 1 ? '' : 's') + ' since then marked as taken.' : '') + took);
       };
     });
+    // Correct the current vial's mix date (logging again only adds a vial; the newest one stays current).
+    Array.prototype.forEach.call(el.querySelectorAll('[data-vupd]'), function (b) {
+      b.onclick = function () {
+        var p = S.protocols.find(function (x) { return x.id === b.getAttribute('data-vupd'); }), v = S.vials[+b.getAttribute('data-vi')];
+        var mixed = document.getElementById('cur-' + p.id).value;
+        if (!v || !mixed) return;
+        if (mixed > TODAY) { alert('The mix date cannot be in the future.'); return; }
+        v.mixed = mixed;
+        var filled = backfillSince(p, mixed, 'curtk-');
+        save(); renderAll();
+        alert('Vial date saved: mixed ' + nice(mixed) + '.' + (filled ? ' ' + filled + ' scheduled dose' + (filled === 1 ? '' : 's') + ' since then marked as taken.' : ''));
+      };
+    });
+    Array.prototype.forEach.call(el.querySelectorAll('[data-vdel]'), function (b) {
+      b.onclick = function () {
+        if (!confirm('Remove this vial? Logged doses stay.')) return;
+        S.vials.splice(+b.getAttribute('data-vi'), 1); save(); renderAll();
+      };
+    });
+    // Past mix date: count the scheduled doses since then (through yesterday) as taken, so the vial and calendar agree.
+    function backfillSince(p, from, boxPrefix) {
+      var box = document.getElementById(boxPrefix + p.id), n = 0;
+      if (from >= TODAY || (box && !box.checked)) return 0;
+      for (var d = from; d < TODAY; d = addDays(d, 1)) {
+        var r = scheduleFor(p, d), k = logKey(p, d);
+        if (r && !r.washout && !S.log[k]) { S.log[k] = { status: 'taken', dose: r.dose, site: '', note: 'Logged with vial mixed ' + from, time: '', perDay: p.perDay || 1 }; n++; }
+      }
+      return n;
+    }
   }
 
   // ---- protocols ----
@@ -308,10 +434,10 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
     var el = document.getElementById('protos');
     el.innerHTML = S.protocols.map(function (p) {
       return '<div class="proto" style="border-left:5px solid ' + colorOf(p) + '"><div class="row"><b style="flex:1">' + esc(p.name) + '</b>' +
-        (p.route === 'Supplement' ? '' : '<button class="ghost" data-edit="' + p.id + '">Edit</button>') + '<button class="ghost" data-pause="' + p.id + '">' + (p.paused ? 'Resume' : 'Pause') + '</button><button class="danger" data-del="' + p.id + '">Delete</button></div>' +
+        (p.route === 'Supplement' ? '<button class="ghost" data-sedit="' + p.id + '">Edit</button>' : '<button class="ghost" data-edit="' + p.id + '">Edit</button>') + '<button class="ghost" data-pause="' + p.id + '">' + (p.paused ? 'Resume' : 'Pause') + '</button><button class="danger" data-del="' + p.id + '">Delete</button></div>' +
         '<p class="small">Start ' + nice(p.start) + ' · ' + (p.weekdays && p.weekdays.length ? p.weekdays.map(function (w) { return WD[w]; }).join('/') : 'every ' + p.intervalDays + ' d') + (injectable(p) ? ' · ' + p.vial.mg + ' ' + (p.unit || 'mg') + ' + ' + p.vial.ml + ' mL (' + f1(p.vial.mg / p.vial.ml) + ' ' + (p.unit || 'mg') + '/mL)' : ' · ' + esc(p.route || '')) + (p.cycleOn ? ' · ' + p.cycleOn + ' d on / ' + p.cycleOff + ' d off' + (p.cycles ? ' × ' + p.cycles : ' (repeating)') : '') + (p.endDate ? ' · final dose ' + nice(p.endDate) : '') + (p.paused ? ' · <b>paused</b>' : '') + '</p>' +
         '<p class="small">' + p.steps.map(function (s) { return s.dose + ' ' + (p.unit || 'mg') + (s.weeks ? ' × ' + s.weeks + ' wk' : ' onward'); }).join(' → ') + (p.template ? ' <span class="muted">(' + esc(p.template) + ')</span>' : '') + '</p>' + (p.note ? '<p class="small muted">' + esc(p.note) + '</p>' : '') +
-        '<div class="row"><label class="small">Dose time <input type="time" data-time="' + p.id + '" value="' + doseTime(p) + '"></label></div>' +
+        '<div class="row"><label class="small">Dose time <input type="time" data-time="' + p.id + '" value="' + doseTime(p) + '"></label>' + (byslug[p.slug] && byslug[p.slug].guide ? '<a class="ghostlink" href="' + p.slug + '.poster.html">Poster</a>' : '') + '</div>' +
         ((byslug[p.slug] && byslug[p.slug].suggest && byslug[p.slug].suggest.length) ? '<p class="small">Paired supplements: ' + byslug[p.slug].suggest.map(function (id) { var s = bySupp[id]; return s ? '<button class="ghost" data-supp="' + id + '" title="' + esc(s.timing) + '">+ ' + esc(s.name.split(' (')[0].split(',')[0]) + ' (' + s.grade + ')</button>' : ''; }).join(' ') + '</p>' : '') + '</div>';
     }).join('') || '<p class="muted">No protocols yet.</p>';
     Array.prototype.forEach.call(el.querySelectorAll('[data-time]'), function (inp) {
@@ -329,7 +455,29 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
       };
     });
     Array.prototype.forEach.call(el.querySelectorAll('[data-pause]'), function (b) {
-      b.onclick = function () { var p = S.protocols.find(function (x) { return x.id === b.getAttribute('data-pause'); }); p.paused = !p.paused; save(); renderAll(); };
+      b.onclick = function () { var p = S.protocols.find(function (x) { return x.id === b.getAttribute('data-pause'); }); if (p.paused) { if (p.pausedAt && p.pausedAt < TODAY) (p.pauses = p.pauses || []).push([p.pausedAt, addDays(TODAY, -1)]); p.paused = false; delete p.pausedAt; } else { p.paused = true; p.pausedAt = TODAY; } save(); renderAll(); };
+    });
+    Array.prototype.forEach.call(el.querySelectorAll('[data-sedit]'), function (b) {
+      b.onclick = function () {
+        var p = S.protocols.find(function (x) { return x.id === b.getAttribute('data-sedit'); }), card = b.closest('.proto');
+        if (card.querySelector('.sedit')) { card.querySelector('.sedit').remove(); return; }
+        card.insertAdjacentHTML('beforeend', '<div class="sedit"><div class="row"><label class="small">Dose <input type="number" step="any" min="0" class="se-dose" value="' + p.steps[0].dose + '" style="width:80px"> ' + esc(p.unit || '') + '</label>' +
+          '<label class="small">Per day <input type="number" min="1" max="6" class="se-pd" value="' + (p.perDay || 1) + '" style="width:50px"></label></div>' +
+          '<div class="row"><label class="small">Start <input type="date" class="se-start" value="' + p.start + '"></label><label class="small">End <input type="date" class="se-end" value="' + (p.endDate || '') + '"></label></div>' +
+          '<div class="row small">Days: ' + WD.map(function (w, i) { return '<label><input type="checkbox" class="se-wd" value="' + i + '"' + ((p.weekdays || []).indexOf(i) >= 0 ? ' checked' : '') + '>' + w + '</label>'; }).join(' ') + ' <span class="muted">(none = every day)</span></div>' +
+          '<div class="row"><button class="se-save">Save</button><button class="ghost se-cancel">Cancel</button></div></div>');
+        var ed = card.querySelector('.sedit');
+        ed.querySelector('.se-cancel').onclick = function () { ed.remove(); };
+        ed.querySelector('.se-save').onclick = function () {
+          var dose = parseFloat(ed.querySelector('.se-dose').value), start = ed.querySelector('.se-start').value, end = ed.querySelector('.se-end').value;
+          if (!(dose > 0)) { alert('Enter a dose.'); return; }
+          if (!start) { alert('Enter a start date.'); return; }
+          if (end && end < start) { alert('The end date is before the start date.'); return; }
+          p.steps = [{ dose: dose, weeks: null }]; p.start = start; p.endDate = end || null; p.perDay = Math.max(1, parseInt(ed.querySelector('.se-pd').value, 10) || 1);
+          p.weekdays = Array.prototype.filter.call(ed.querySelectorAll('.se-wd'), function (x) { return x.checked; }).map(function (x) { return +x.value; });
+          save(); renderAll();
+        };
+      };
     });
     Array.prototype.forEach.call(el.querySelectorAll('[data-edit]'), function (b) {
       b.onclick = function () { openForm(S.protocols.find(function (x) { return x.id === b.getAttribute('data-edit'); })); };
@@ -337,9 +485,11 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
   }
 
   function openForm(existing, preslug) {
+    if (typeof setTab === 'function') setTab('prot');
     var f = document.getElementById('protoForm');
     f.classList.remove('hide');
     var slug = existing ? existing.slug : (preslug && byslug[preslug] ? preslug : (C[0] && C[0].slug));
+    var editing = existing; // save target stays fixed even if the compound is changed mid-edit
     function draw(slug, tplId) {
       var c = byslug[slug];
       var tpl = existing && !tplId ? null : (c.templates.find(function (t) { return t.id === tplId; }) || c.templates[0]);
@@ -350,7 +500,9 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
       var cSel = !(cyc.on && cyc.off) ? 'none' : mi >= 0 ? String(mi) : 'custom';
       // New protocols with a cycle default to one cycle (so they get a final dose day); edits keep their count.
       var cN = existing && !tplId ? existing.cycles || 0 : (cSel === 'none' ? 0 : 1);
-      var vi = existing ? c.vials.findIndex(function (v) { return v.mg === existing.vial.mg && v.ml === existing.vial.ml; }) : (c.primaryVial || 0);
+      var vials = c.vials.slice(), U = c.unit || 'mg';
+      var vi = existing ? vials.findIndex(function (v) { return v.mg === existing.vial.mg && v.ml === existing.vial.ml; }) : (c.primaryVial || 0);
+      if (existing && vi < 0) { vials.push({ mg: existing.vial.mg, ml: existing.vial.ml }); vi = vials.length - 1; }
       f.innerHTML = '<div class="proto"><div class="row"><label class="small">Compound <select id="pf-c">' + C.map(function (x) { return '<option value="' + x.slug + '"' + (x.slug === slug ? ' selected' : '') + '>' + esc(x.name) + ' (' + esc(x.siteName) + ')</option>'; }).join('') + '</select></label>' +
         '<label class="small">Template <select id="pf-t">' + c.templates.map(function (t) { return '<option value="' + t.id + '"' + (tpl && tpl.id === t.id ? ' selected' : '') + '>' + esc(t.label) + '</option>'; }).join('') + (existing ? '<option value=""' + (!tpl ? ' selected' : '') + '>Keep current steps</option>' : '') + '</select></label></div>' +
         (tpl && tpl.note ? '<p class="small muted">' + esc(tpl.note) + '</p>' : '') +
@@ -358,7 +510,7 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
         '<label class="small">Dose time <input type="time" id="pf-time" value="' + (existing ? doseTime(existing) : '08:00') + '"></label>' +
         '<label class="small">Every <input type="number" id="pf-i" min="1" value="' + (existing ? existing.intervalDays : c.intervalDays) + '" style="width:60px"> days</label>' +
         '<span class="small">Days: ' + WD.map(function (w, i) { var on = existing ? (existing.weekdays || []).indexOf(i) >= 0 : ((tpl && tpl.weekdays) || []).indexOf(i) >= 0; return '<label><input type="checkbox" class="pf-wd" value="' + i + '"' + (on ? ' checked' : '') + '>' + w + '</label> '; }).join('') + '<span class="muted">(none = use "Every N days")</span></span></div><div class="row">' +
-        '<label class="small">Injections/day <input type="number" id="pf-pd" min="1" max="4" value="' + (existing ? existing.perDay || 1 : (tpl && tpl.perDay) || 1) + '" style="width:50px"></label><label class="small">Vial <select id="pf-v">' + c.vials.map(function (v, i) { return '<option value="' + i + '"' + (i === vi ? ' selected' : '') + '>' + v.mg + ' mg + ' + v.ml + ' mL (' + f1(v.mg / v.ml) + ' mg/mL)</option>'; }).join('') + '</select></label></div>' +
+        '<label class="small">Injections/day <input type="number" id="pf-pd" min="1" max="4" value="' + (existing ? existing.perDay || 1 : (tpl && tpl.perDay) || 1) + '" style="width:50px"></label><label class="small">Vial <select id="pf-v">' + vials.map(function (v, i) { return '<option value="' + i + '"' + (i === vi ? ' selected' : '') + '>' + v.mg + ' ' + U + ' + ' + v.ml + ' mL (' + f1(v.mg / v.ml) + ' ' + U + '/mL)</option>'; }).join('') + '</select></label></div>' +
         '<div class="row"><label class="small">Cycle <select id="pf-cyc">' + copts.map(function (o, i) { return '<option value="' + i + '"' + (cSel === String(i) ? ' selected' : '') + '>' + esc(o.label) + '</option>'; }).join('') +
           '<option value="none"' + (cSel === 'none' ? ' selected' : '') + '>Continuous (no cycle)</option><option value="custom"' + (cSel === 'custom' ? ' selected' : '') + '>Custom…</option></select></label>' +
           '<label class="small">on <input type="number" id="pf-on" min="0" value="' + (cyc.on || 0) + '" style="width:60px"> days</label><label class="small">off <input type="number" id="pf-off" min="0" value="' + (cyc.off || 0) + '" style="width:60px"> days</label></div>' +
@@ -366,9 +518,9 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
           '<label class="small">Final dose day <input type="date" id="pf-end" value="' + (existing && !tplId ? existing.endDate || '' : '') + '"></label><span class="small muted" id="pf-endtxt"></span></div>' +
         '<p class="small muted">' + (c.cycle && c.cycle.note ? esc(c.cycle.note) : 'No catalog cycle.') + '</p>' +
         '<div class="row" id="pf-backrow"><label class="small">Start is in the past: earlier doses <select id="pf-back"><option value="taken">mark as taken</option><option value="none">leave unlogged (show as missed)</option></select></label><span class="small muted">Already-logged days are kept.</span></div>' +
-        '<table class="steps-ed"><thead><tr><th>Step</th><th>Dose (mg)</th><th>Weeks (blank = onward)</th><th></th></tr></thead><tbody id="pf-steps">' +
+        '<table class="steps-ed"><thead><tr><th>Step</th><th>Dose (' + esc(U) + ')</th><th>Weeks (blank = onward)</th><th></th></tr></thead><tbody id="pf-steps">' +
         steps.map(function (s, i) { return stepRow(i, s); }).join('') + '</tbody></table>' +
-        '<div class="row"><button class="ghost" id="pf-add">+ Step</button><span style="flex:1"></span><button class="ghost" id="pf-cancel">Cancel</button><button id="pf-save">' + (existing ? 'Save' : 'Add protocol') + '</button></div></div>';
+        '<div class="row"><button class="ghost" id="pf-add">+ Step</button><span style="flex:1"></span><button class="ghost" id="pf-cancel">Cancel</button><button id="pf-save">' + (editing ? 'Save' : 'Add protocol') + '</button></div></div>';
       document.getElementById('pf-c').onchange = function () { existing = null; draw(this.value); };
       document.getElementById('pf-t').onchange = function () { draw(slug, this.value || null); };
       var $ = function (id) { return document.getElementById(id); };
@@ -388,7 +540,7 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
       };
       ['pf-on', 'pf-off'].forEach(function (id) { $(id).oninput = function () { $('pf-cyc').value = 'custom'; syncEnd(true); }; });
       $('pf-cn').onchange = function () { syncEnd(true); };
-      function syncBack() { $('pf-backrow').style.display = $('pf-s').value && $('pf-s').value < TODAY ? '' : 'none'; }
+      function syncBack() { $('pf-backrow').style.display = !editing && $('pf-s').value && $('pf-s').value < TODAY ? '' : 'none'; }
       $('pf-s').onchange = function () { syncEnd(true); syncBack(); };
       syncBack();
       $('pf-end').onchange = function () { syncEnd(false); };
@@ -402,9 +554,9 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
         if (!rows.length) { alert('Add at least one step with a dose.'); return; }
         var endV = document.getElementById('pf-end').value;
         if (endV && endV < document.getElementById('pf-s').value) { alert('The final dose day is before the start date.'); return; }
-        var v = c.vials[+document.getElementById('pf-v').value];
+        var v = vials[+document.getElementById('pf-v').value];
         var t = document.getElementById('pf-t');
-        var p = existing || { id: 'p' + Date.now().toString(36), color: COLORS[S.protocols.length % COLORS.length] };
+        var p = editing || { id: newId(), color: COLORS[S.protocols.length % COLORS.length] };
         p.slug = c.slug; p.name = c.name + ' (' + c.siteName + ')'; p.short = c.siteName;
         p.start = document.getElementById('pf-s').value; p.time = document.getElementById('pf-time').value || '08:00'; p.intervalDays = Math.max(1, parseInt(document.getElementById('pf-i').value, 10) || 7);
         p.route = c.route; p.vial = { mg: v.mg, ml: v.ml }; p.steps = rows; p.perDay = Math.max(1, parseInt(document.getElementById('pf-pd').value, 10) || 1); p.unit = c.unit || 'mg';
@@ -413,16 +565,17 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
         if (!p.cycleOn || !p.cycleOff) { p.cycleOn = 0; p.cycleOff = 0; }
         p.cycles = p.cycleOn ? +document.getElementById('pf-cn').value : 0;
         p.endDate = document.getElementById('pf-end').value || null;
+        if (p.endDate) { var probe = Object.assign({}, p, { endDate: null, paused: false, pauses: [] }), guard = 0; while (p.endDate > p.start && guard++ < 60) { var pr = scheduleFor(probe, p.endDate); if (pr && !pr.washout) break; p.endDate = addDays(p.endDate, -1); } }
         if (t.value) p.template = t.options[t.selectedIndex].text;
-        if (!existing) S.protocols.push(p);
-        // Backdated start: log the past scheduled doses as taken so they don't all read as missed.
-        if (p.start < TODAY && document.getElementById('pf-back').value === 'taken') {
+        if (!editing) S.protocols.push(p);
+        // Backdated start (new protocols only): log the past scheduled doses as taken so they don't all read as missed.
+        if (!editing && p.start < TODAY && document.getElementById('pf-back').value === 'taken') {
           for (var bd = p.start; bd < TODAY; bd = addDays(bd, 1)) {
             var br = scheduleFor(p, bd), bk = logKey(p, bd);
-            if (br && !br.washout && !S.log[bk]) S.log[bk] = { status: 'taken', dose: br.dose, site: '', note: 'Backfilled (start set in the past)', time: '' };
+            if (br && !br.washout && !S.log[bk]) S.log[bk] = { status: 'taken', dose: br.dose, site: '', note: 'Backfilled (start set in the past)', time: '', perDay: p.perDay };
           }
         }
-        save(); f.classList.add('hide'); f.innerHTML = ''; sel = p.start; view = new Date(parse(p.start)); view = new Date(view.getUTCFullYear(), view.getUTCMonth(), 1); renderAll();
+        save(); f.classList.add('hide'); f.innerHTML = ''; setTab('cal'); sel = p.start > TODAY ? p.start : TODAY; view = new Date(parse(sel)); view = new Date(view.getUTCFullYear(), view.getUTCMonth(), 1); renderAll();
       };
       bindRm();
     }
@@ -433,7 +586,181 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
 
   function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
-  function renderAll() { renderCal(); renderDay(); renderStatus(); renderProtos(); }
+  function renderNag() {
+    var el = document.getElementById('backupNag'), age = S.lastBackup ? diffDays(S.lastBackup, TODAY) : null;
+    var backup = S.protocols.length && (age === null || age > 14), low = lowStockLine();
+    el.classList.toggle('hide', !backup && !low);
+    if (low && !backup) { el.innerHTML = low + '<button class="ghost" id="nagStock">Open stock</button>'; document.getElementById('nagStock').onclick = function () { setTab('stock'); document.getElementById('stockPanel').scrollIntoView({ block: 'start' }); }; }
+    if (backup) { el.innerHTML = low + (age === null ? 'Your dosing log lives only on this device. ' : 'Last backup ' + age + ' days ago. ') + '<button class="ghost" id="nagGo">Back up now</button>'; document.getElementById('nagGo').onclick = function () { setTab('more'); document.getElementById('exportBtn').scrollIntoView({ block: 'center' }); }; }
+  }
+  // ---- stock: unmixed vials / packs / bottles on hand ----
+  // Matching: same compound; injectables also need the same vial size, since units depend on it.
+  var SUPPLIES = { syringe: { name: 'Insulin syringes (U-100)', unit: 'syringes', perBox: 100 }, pad: { name: 'Alcohol pads', unit: 'pads', perBox: 100 } };
+  function supplies() { return S.stock.filter(function (x) { return x.kind === 'supply'; }); }
+  // Injections on day s across all active injectable protocols (only days not yet logged when 'unloggedOnly').
+  function injectionsOn(s, unloggedOnly) {
+    var n = 0;
+    S.protocols.forEach(function (p) { if (!injectable(p) || p.paused) return; var r = scheduleFor(p, s); if (r && !r.washout && !(unloggedOnly && (S.log[logKey(p, s)] || {}).status)) n += p.perDay || 1; });
+    return n;
+  }
+  function anyTakenInj(day) { return S.protocols.some(function (p) { return injectable(p) && (S.log[logKey(p, day)] || {}).status === 'taken'; }); }
+  // Future use: syringes = every remaining injection; pads = 1 per day that still has an injection and none taken yet.
+  function supplyRunOut(x) {
+    var left = +x.qty || 0;
+    for (var i = 0; i < 730; i++) {
+      var s = addDays(TODAY, i), inj = injectionsOn(s, true);
+      left -= x.supply === 'pad' ? (inj && !anyTakenInj(s) ? 1 : 0) : inj;
+      if (left < 0) return { date: s, days: i };
+    }
+    return { enough: true };
+  }
+  // Taken uses supplies; un-taking (Clear, Skipped, a different dose count) puts them back.
+  // syringeDelta = change in injections taken; padDelta = +1 when the day gets its first taken injection, -1 when it loses its last.
+  function useSupplies(syringeDelta, padDelta) {
+    supplies().forEach(function (x) { var d = x.supply === 'pad' ? padDelta : syringeDelta; if (d) x.qty = Math.max(0, (+x.qty || 0) - d); });
+  }
+  function stockFor(p) { return S.stock.filter(function (x) { return x.kind !== 'supply' && x.slug === p.slug && (!injectable(p) || +x.size === +p.vial.mg); }); }
+  function stockQty(p) { return stockFor(p).reduce(function (a, x) { return a + (+x.qty || 0); }, 0); }
+  // Amount one scheduled day uses, in the stock item's unit: supplements count servings, everything else the dose.
+  function dayUse(p, r) { return p.route === 'Supplement' ? (p.perDay || 1) : r.dose * (p.perDay || 1); }
+  // Walks the real schedule (ladder, cycles, washout, end date) until on-hand supply is used up.
+  function runOut(p) {
+    var items = stockFor(p); if (!items.length || p.paused) return null;
+    var size = +items[0].size || 0, left = stockQty(p) * size, vs = injectable(p) ? vialStatus(p, TODAY) : null;
+    if (vs && vs.left > 0) left += vs.left;
+    if (p.route === 'Supplement' || !injectable(p)) left = stockQty(p) * size; // packs and bottles: count what's on hand
+    for (var i = 0; i < 730; i++) {
+      var s = addDays(TODAY, i), r = scheduleFor(p, s);
+      if (r && !r.washout && !(S.log[logKey(p, s)] || {}).status) { left -= dayUse(p, r); if (left < 0) return { date: s, days: i }; }
+      if (p.endDate && s > p.endDate) return { enough: true };
+    }
+    return { enough: true };
+  }
+  function renderStock() {
+    var el = document.getElementById('stock');
+    var html = S.stock.map(function (x, i) {
+      if (x.kind === 'supply') {
+        var ro = supplyRunOut(x), perDayNow = injectionsOn(TODAY, false);
+        return '<div class="proto"><div class="row"><b style="flex:1">' + esc(x.name) + '</b><button class="ghost" data-sq="' + i + '" data-d="-1" aria-label="One less">−</button><input type="number" min="0" inputmode="numeric" data-sset="' + i + '" value="' + x.qty + '" aria-label="How many on hand" style="width:72px;text-align:center"><button class="ghost" data-sq="' + i + '" data-d="1" aria-label="One more">+</button><button class="ghost" data-sdel="' + i + '">Remove</button></div>' +
+          '<p class="small">' + esc(x.unit) + ' on hand · ' + (x.supply === 'pad' ? '1 per injection day' : '1 per dose') + (x.note ? ' · ' + esc(x.note) : '') + '</p>' +
+          '<p class="small">' + (ro.enough ? '<span class="okc">Enough for the rest of your injection schedules</span>' : '<span class="' + (ro.days < 21 ? 'warn' : '') + '">Runs out about ' + nice(ro.date) + ' (' + ro.days + ' d)</span>') + (perDayNow ? ' · ' + perDayNow + ' injection' + (perDayNow === 1 ? '' : 's') + ' today' : '') + '</p></div>';
+      }
+      var users = S.protocols.filter(function (p) { return stockFor(p).indexOf(x) >= 0; });
+      var expDays = x.expires ? diffDays(TODAY, x.expires) : null;
+      var supply = users.map(function (p) { var ro = runOut(p); return !ro ? '' : ro.enough ? '<span class="okc">Enough for the rest of the ' + esc(p.short) + ' schedule</span>' : '<span class="' + (ro.days < 21 ? 'warn' : '') + '">' + esc(p.short) + ' runs out about ' + nice(ro.date) + ' (' + ro.days + ' d)</span>'; }).filter(Boolean).join(' · ');
+      return '<div class="proto"><div class="row"><b style="flex:1">' + esc(x.name) + '</b><button class="ghost" data-sq="' + i + '" data-d="-1" aria-label="One less">−</button><b style="min-width:2ch;text-align:center">' + x.qty + '</b><button class="ghost" data-sq="' + i + '" data-d="1" aria-label="One more">+</button><button class="ghost" data-sdel="' + i + '">Remove</button></div>' +
+        '<p class="small">' + (x.size ? fd(x.size) + ' ' + esc(x.unit || '') + ' each' : '') + (x.expires ? ' · expires ' + nice(x.expires) + (expDays < 0 ? ' <span class="warn">(expired)</span>' : expDays <= 30 ? ' <span class="warn">(within 30 days)</span>' : '') : '') + (x.note ? ' · ' + esc(x.note) : '') + '</p>' +
+        (supply ? '<p class="small">' + supply + '</p>' : users.length ? '' : '<p class="small muted">Not used by an active protocol' + (x.slug && x.slug.indexOf('supp:') !== 0 && byslug[x.slug] ? ' (check the vial size matches)' : '') + '.</p>') + '</div>';
+    }).join('');
+    el.innerHTML = html || '<p class="muted">Nothing in stock yet. Add vials, syringes, alcohol pads, packs or bottles above.</p>';
+    if (!S.stock.length) document.getElementById('stForm').classList.remove('hide');
+    Array.prototype.forEach.call(el.querySelectorAll('[data-sq]'), function (b) { b.onclick = function () { var x = S.stock[+b.getAttribute('data-sq')]; x.qty = Math.max(0, (+x.qty || 0) + +b.getAttribute('data-d')); save(); renderAll(); }; });
+    Array.prototype.forEach.call(el.querySelectorAll('[data-sset]'), function (inp) { inp.onchange = function () { var x = S.stock[+inp.getAttribute('data-sset')]; x.qty = Math.max(0, parseInt(inp.value, 10) || 0); save(); renderAll(); }; });
+    Array.prototype.forEach.call(el.querySelectorAll('[data-sdel]'), function (b) { b.onclick = function () { if (confirm('Remove this item from stock?')) { S.stock.splice(+b.getAttribute('data-sdel'), 1); save(); renderAll(); } }; });
+  }
+  // Add form: catalog compounds, supplements, or anything typed in.
+  (function () {
+    var sel = document.getElementById('stItem');
+    sel.innerHTML = '<optgroup label="Injection supplies"><option value="__syringe">Insulin syringes (U-100)</option><option value="__pad">Alcohol pads</option></optgroup><optgroup label="Compounds">' + C.map(function (c) { return '<option value="' + c.slug + '">' + esc(c.name) + '</option>'; }).join('') + '</optgroup><optgroup label="Supplements">' + SUPPS.map(function (s) { return '<option value="supp:' + s.id + '">' + esc(s.name) + '</option>'; }).join('') + '</optgroup><option value="__other">Other (type a name)…</option>';
+    function prefill() {
+      var v = sel.value, c = byslug[v], other = v === '__other', sup = SUPPLIES[v.slice(2)];
+      document.getElementById('stName').classList.toggle('hide', !other);
+      document.getElementById('stSize').closest('label').classList.toggle('hide', !!sup); document.getElementById('stQtyL').textContent = sup ? 'How many' : 'Qty';
+      if (sup) return;
+      var unit = other ? '' : c ? (c.unit || 'mg') : 'servings';
+      var inj = c && (!c.route || c.route === 'Injectable');
+      document.getElementById('stUnit').textContent = unit || 'per item';
+      document.getElementById('stSize').value = c ? (c.vials[c.primaryVial || 0] || {}).mg || '' : '';
+      document.getElementById('stSize').title = inj ? 'Vial strength: must match the protocol\'s vial for supply estimates' : 'Units per pack or servings per bottle';
+    }
+    sel.onchange = prefill;
+    var used = S.protocols.map(function (p) { return p.slug; }).filter(function (s) { return byslug[s] || s.indexOf('supp:') === 0; })[0];
+    if (used) sel.value = used;
+    prefill();
+    document.getElementById('stToggle').onclick = function () { var f = document.getElementById('stForm'); f.classList.toggle('hide'); if (!f.classList.contains('hide')) sel.focus(); };
+    document.getElementById('stCancel').onclick = function () { document.getElementById('stForm').classList.add('hide'); };
+    document.getElementById('stAdd').onclick = function () {
+      var sup0 = SUPPLIES[sel.value.slice(2)];
+      if (sup0) {
+        var count = Math.max(0, parseInt(document.getElementById('stQty').value, 10) || 0);
+        var have = supplies().filter(function (x) { return x.supply === sel.value.slice(2); })[0];
+        if (have) have.qty = (+have.qty || 0) + count;
+        else S.stock.unshift({ id: newId(), kind: 'supply', supply: sel.value.slice(2), slug: '', name: sup0.name, unit: sup0.unit, qty: count, note: document.getElementById('stNote').value.trim() });
+        document.getElementById('stNote').value = ''; document.getElementById('stQty').value = 1; save(); renderAll(); return;
+      }
+      var v = sel.value, c = byslug[v], other = v === '__other', sp = v.indexOf('supp:') === 0 ? bySupp[v.slice(5)] : null;
+      var name = other ? document.getElementById('stName').value.trim() : c ? c.name : sp ? sp.name : v;
+      if (!name) { alert('Type a name for the item.'); return; }
+      var qty = Math.max(0, parseInt(document.getElementById('stQty').value, 10) || 0), size = parseFloat(document.getElementById('stSize').value) || 0;
+      S.stock.push({ id: newId(), slug: other ? '' : v, name: name + (c && size ? ' ' + fd(size) + ' ' + (c.unit || 'mg') : ''), size: size, unit: other ? '' : c ? (c.unit || 'mg') : 'servings', qty: qty, expires: document.getElementById('stExp').value || '', note: document.getElementById('stNote').value.trim() });
+      document.getElementById('stNote').value = ''; document.getElementById('stExp').value = ''; document.getElementById('stQty').value = 1;
+      save(); renderAll();
+    };
+  })();
+  // Calendar heads-up when a protocol's stock runs out within 3 weeks.
+  function lowStockLine() {
+    var low = S.protocols.map(function (p) { var ro = runOut(p); return ro && !ro.enough && ro.days < 21 ? esc(p.short) + ' ~' + nice(ro.date) : ''; }).filter(Boolean);
+    supplies().forEach(function (x) { var ro = supplyRunOut(x); if (!ro.enough && ro.days < 21) low.push(esc(x.unit) + ' ~' + nice(ro.date)); });
+    return low.length ? 'Running low: ' + low.join(', ') + '. ' : '';
+  }
+  function renderToday() {
+    var due = 0, done = 0;
+    S.protocols.forEach(function (p) { var r = scheduleFor(p, TODAY); if (r && !r.washout) { if ((S.log[logKey(p, TODAY)] || {}).status) done++; else due++; } });
+    var el = document.getElementById('todayBar');
+    el.classList.toggle('hide', !due && !done);
+    el.classList.toggle('done', !due && done > 0);
+    el.innerHTML = due ? '<span>Today: ' + due + ' dose' + (due === 1 ? '' : 's') + ' to log</span><span>Log ›</span>' : '<span>Today: all ' + done + ' logged ✓</span><span>View ›</span>';
+    el.onclick = function () { view = new Date(); view.setDate(1); openDay(TODAY); };
+  }
+  // ---- install: the browser's own prompt where it offers one, otherwise per-device steps ----
+  (function () {
+    var btn = document.getElementById('installBtn'), deferred = null;
+    var standalone = navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+    if (standalone) return;
+    btn.classList.remove('hide');
+    window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferred = e; });
+    window.addEventListener('appinstalled', function () { btn.classList.add('hide'); });
+    btn.onclick = function () {
+      if (deferred) { deferred.prompt(); deferred.userChoice.then(function () { deferred = null; }); return; }
+      var ua = navigator.userAgent, ios = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      var steps = ios ? (/CriOS|FxiOS|EdgiOS/.test(ua) ? 'Open this page in <b>Safari</b>, tap <b>Share</b> (square with arrow), then <b>Add to Home Screen</b>.' : 'Tap <b>Share</b> (square with arrow) at the bottom, scroll down, then tap <b>Add to Home Screen</b>.')
+        : /Android/.test(ua) ? 'Tap the <b>⋮</b> menu (top right), then <b>Install app</b> or <b>Add to Home screen</b>.'
+        : /Edg\//.test(ua) ? 'Click the <b>⋯</b> menu, then <b>Apps</b> → <b>Install this site as an app</b> (or the install icon in the address bar).'
+        : /Chrome\//.test(ua) ? 'Click the install icon at the right end of the address bar, or <b>⋮</b> → <b>Cast, save and share</b> → <b>Install page as app</b>.'
+        : 'Use your browser menu to install this page or add it to your home screen.';
+      var old = document.getElementById('installHelp'); if (old) old.remove();
+      document.body.insertAdjacentHTML('beforeend', '<div class="panel" id="installHelp"><h2>Install Research Dosing</h2><p>' + steps + '</p><p class="small muted">On a work computer, install may be turned off by your company.</p><div class="row"><button id="installOk">Got it</button></div></div>');
+      document.getElementById('installOk').onclick = function () { document.getElementById('installHelp').remove(); };
+    };
+  })();
+  function renderAll() { renderCal(); renderDay(); renderStatus(); renderProtos(); renderStock(); renderNag(); renderToday(); }
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) { /* not supported */ }
+  // ---- phone tabs: one section at a time; desktop ignores data-tab ----
+  function phone() { return window.matchMedia && matchMedia('(max-width:760px)').matches; }
+  function openDay(d) {
+    sel = d; renderAll();
+    var p = document.getElementById('dayPanel');
+    p.classList.add('open'); p.setAttribute('aria-hidden', 'false'); p.scrollTop = 0;
+    document.getElementById('dayBackdrop').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDay() {
+    var p = document.getElementById('dayPanel');
+    p.classList.remove('open'); p.setAttribute('aria-hidden', 'true');
+    document.getElementById('dayBackdrop').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('dayClose').onclick = closeDay;
+  document.getElementById('dayBackdrop').onclick = closeDay;
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeDay(); });
+  function setTab(t) {
+    closeDay();
+    document.body.setAttribute('data-tab', t);
+    Array.prototype.forEach.call(document.querySelectorAll('#tabbar [data-go]'), function (b) { b.classList.toggle('on', b.getAttribute('data-go') === t); });
+    if (phone()) window.scrollTo(0, 0);
+  }
+  document.body.setAttribute('data-tab', 'cal');
+  Array.prototype.forEach.call(document.querySelectorAll('#tabbar [data-go]'), function (b) { b.onclick = function () { setTab(b.getAttribute('data-go')); }; });
 
   document.getElementById('prev').onclick = function () { view.setMonth(view.getMonth() - 1); renderCal(); };
   document.getElementById('next').onclick = function () { view.setMonth(view.getMonth() + 1); renderCal(); };
@@ -450,29 +777,41 @@ select,input{background:var(--card);border:1px solid var(--line);border-radius:6
     var res = buildIcs(+document.getElementById('icsDays').value, +document.getElementById('icsAlarm').value);
     if (!res.count) { alert('Nothing scheduled in that window. Add or resume a protocol first.'); return; }
     var name = 'dosing-' + TODAY + '.ics';
-    if (navigator.standalone) {
-      // iPhone home-screen app: blob downloads are unreliable there; a data URL opens Calendar's import sheet.
-      window.location.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(res.text);
-    } else {
-      var a = document.createElement('a');
-      a.href = URL.createObjectURL(new Blob([res.text], { type: 'text/calendar;charset=utf-8' }));
-      a.download = name; a.click();
-    }
-    setTimeout(function () { alert(res.count + ' dose events exported. Open the file to add them to your calendar.'); }, 300);
+    deliver(res.text, name, 'text/calendar').then(function (ok) { if (ok) alert(res.count + ' dose events exported. Open the file to add them to your calendar.'); });
   };
+  // Share sheet when the device can share files (iPhone home-screen apps can't download blobs); download otherwise.
+  // Download everywhere; only the iPhone/iPad home-screen app uses the share sheet (it can't download blobs).
+  // A failed share can't fall back to a download (the tap's permission is gone by then), so share is never tried elsewhere.
+  function iosHomeScreen() {
+    var ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    return ios && (navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches));
+  }
+  function deliver(text, name, type) {
+    if (iosHomeScreen()) {
+      try {
+        var file = new File([text], name, { type: type });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) return navigator.share({ files: [file], title: name }).then(function () { return true; }, function (e) { if (!e || e.name !== 'AbortError') alert('Could not open the share sheet. Try again, or export from Safari.'); return false; });
+      } catch (e) { /* fall through to the data link */ }
+      window.location.href = 'data:' + type + ';charset=utf-8,' + encodeURIComponent(text);
+      return Promise.resolve(true);
+    }
+    return Promise.resolve(download());
+    function download() { var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: type })); a.download = name; document.body.appendChild(a); a.click(); a.remove(); return true; }
+  }
   document.getElementById('exportBtn').onclick = function () {
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([JSON.stringify(S, null, 2)], { type: 'application/json' }));
-    a.download = 'dosing-backup-' + TODAY + '.json'; a.click();
+    S.lastBackup = TODAY; save();
+    deliver(JSON.stringify(S, null, 2), 'dosing-backup-' + TODAY + '.json', 'application/json').then(function (ok) { if (!ok) { delete S.lastBackup; save(); } renderAll(); });
   };
   document.getElementById('importFile').onchange = function () {
-    var file = this.files[0]; if (!file) return;
+    var inputEl = this, file = this.files[0]; if (!file) return;
     file.text().then(function (t) {
-      try { var d = JSON.parse(t); if (!d.protocols || !d.log) throw new Error('not a backup'); if (confirm('Replace current data with this backup?')) { S = d; S.vials = S.vials || []; save(); renderAll(); } }
+      try { var d = JSON.parse(t); if (!d.protocols || !d.log) throw new Error('not a backup'); if (confirm('Replace current data with this backup?')) { S = d; S.vials = S.vials || []; S.stock = S.stock || []; save(); renderAll(); alert('Backup restored: ' + S.protocols.length + ' protocol' + (S.protocols.length === 1 ? '' : 's') + '.'); } }
       catch (e) { alert('Could not import: ' + e.message); }
+      inputEl.value = '';
     });
   };
   if (location.hash.length > 1 && byslug[location.hash.slice(1)] && !S.protocols.some(function (p) { return p.slug === location.hash.slice(1); })) openForm(null, location.hash.slice(1));
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && ds(new Date()) !== TODAY) location.reload(); });
   renderAll();
 })();
 </script>

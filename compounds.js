@@ -3,6 +3,7 @@ window.RDS_COMPOUNDS = [
   "slug": "glp3-r",
   "name": "Retatrutide",
   "siteName": "GLP3-R",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -92,6 +93,7 @@ window.RDS_COMPOUNDS = [
   "slug": "glp1-s",
   "name": "Semaglutide",
   "siteName": "GLP1-S",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -162,6 +164,7 @@ window.RDS_COMPOUNDS = [
   "slug": "glp2-t",
   "name": "Tirzepatide",
   "siteName": "GLP2-T",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -254,6 +257,7 @@ window.RDS_COMPOUNDS = [
   "slug": "cagrilinitide",
   "name": "Cagrilintide",
   "siteName": "Cagrilinitide",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -359,6 +363,7 @@ window.RDS_COMPOUNDS = [
   "slug": "mazdutide",
   "name": "Mazdutide",
   "siteName": "Mazdutide",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -409,6 +414,7 @@ window.RDS_COMPOUNDS = [
   "slug": "survodutide",
   "name": "Survodutide",
   "siteName": "Survodutide",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -463,6 +469,7 @@ window.RDS_COMPOUNDS = [
   "slug": "aod-9604",
   "name": "AOD-9604",
   "siteName": "AOD-9604",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -521,6 +528,7 @@ window.RDS_COMPOUNDS = [
   "slug": "5-amino-1mq",
   "name": "5-Amino-1MQ",
   "siteName": "5-Amino-1MQ",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -590,6 +598,7 @@ window.RDS_COMPOUNDS = [
   "slug": "slu-pp-332",
   "name": "SLU-PP-332",
   "siteName": "SLU-PP-332",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -640,6 +649,7 @@ window.RDS_COMPOUNDS = [
   "slug": "adipotide",
   "name": "Adipotide",
   "siteName": "Adipotide",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -695,6 +705,7 @@ window.RDS_COMPOUNDS = [
   "slug": "tesamorelin",
   "name": "Tesamorelin",
   "siteName": "Tesamorelin",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -781,6 +792,7 @@ window.RDS_COMPOUNDS = [
   "slug": "sermorelin",
   "name": "Sermorelin",
   "siteName": "Sermorelin",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -843,6 +855,7 @@ window.RDS_COMPOUNDS = [
   "slug": "cjc-no-dac",
   "name": "CJC-1295 (no DAC)",
   "siteName": "CJC No DAC",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -917,6 +930,7 @@ window.RDS_COMPOUNDS = [
   "slug": "ipamorelin",
   "name": "Ipamorelin",
   "siteName": "Ipamorelin",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -981,6 +995,7 @@ window.RDS_COMPOUNDS = [
   "slug": "ghrp-2",
   "name": "GHRP-2",
   "siteName": "GHRP-2",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -1027,6 +1042,7 @@ window.RDS_COMPOUNDS = [
   "slug": "ghrp-6",
   "name": "GHRP-6",
   "siteName": "GHRP-6",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -1079,6 +1095,7 @@ window.RDS_COMPOUNDS = [
   "slug": "igf1-lr3",
   "name": "IGF-1 LR3",
   "siteName": "IGF-1 LR3",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -1142,6 +1159,7 @@ window.RDS_COMPOUNDS = [
   "slug": "hcg",
   "name": "hCG",
   "siteName": "HCG",
+  "guide": true,
   "route": "Injectable",
   "unit": "IU",
   "vials": [
@@ -1223,6 +1241,7 @@ window.RDS_COMPOUNDS = [
   "slug": "kisspeptin",
   "name": "Kisspeptin",
   "siteName": "Kisspeptin",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -1279,6 +1298,7 @@ window.RDS_COMPOUNDS = [
   "slug": "oxytocin",
   "name": "Oxytocin",
   "siteName": "Oxytocin",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -1320,6 +1340,7 @@ window.RDS_COMPOUNDS = [
   "slug": "b12",
   "name": "Vitamin B12",
   "siteName": "B12",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -1367,6 +1388,7 @@ window.RDS_COMPOUNDS = [
   "slug": "glutathione",
   "name": "Glutathione",
   "siteName": "Glutathione",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -1418,6 +1440,7 @@ window.RDS_COMPOUNDS = [
   "slug": "l-carnitine",
   "name": "L-Carnitine",
   "siteName": "L-Carnitine",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -1477,6 +1500,7 @@ window.RDS_COMPOUNDS = [
   "slug": "mots-c",
   "name": "MOTS-c",
   "siteName": "MOTS-C",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -1549,6 +1573,7 @@ window.RDS_COMPOUNDS = [
   "slug": "nad",
   "name": "NAD+",
   "siteName": "NAD: Buffered & Unbuffered",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -1619,6 +1644,7 @@ window.RDS_COMPOUNDS = [
   "slug": "ss-31",
   "name": "SS-31 (Elamipretide)",
   "siteName": "SS-31",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -1697,6 +1723,7 @@ window.RDS_COMPOUNDS = [
   "slug": "ara-290",
   "name": "ARA-290 (Cibinetide)",
   "siteName": "ARA-290",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -1762,6 +1789,7 @@ window.RDS_COMPOUNDS = [
   "slug": "fox04-dri",
   "name": "FOXO4-DRI",
   "siteName": "Fox04-DRI",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -1821,6 +1849,7 @@ window.RDS_COMPOUNDS = [
   "slug": "ll-37",
   "name": "LL-37",
   "siteName": "LL-37",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -1901,6 +1930,7 @@ window.RDS_COMPOUNDS = [
   "slug": "melanotan",
   "name": "Melanotan II",
   "siteName": "Melanotan 2- MT2",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -1965,6 +1995,7 @@ window.RDS_COMPOUNDS = [
   "slug": "thymosin-alpha-1",
   "name": "Thymosin Alpha-1",
   "siteName": "Thymosin Alpha-1: TA1",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -2025,6 +2056,7 @@ window.RDS_COMPOUNDS = [
   "slug": "vip",
   "name": "VIP",
   "siteName": "VIP",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -2095,6 +2127,7 @@ window.RDS_COMPOUNDS = [
   "slug": "bpc-157",
   "name": "BPC-157",
   "siteName": "BPC-157",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -2171,6 +2204,7 @@ window.RDS_COMPOUNDS = [
   "slug": "tb-500",
   "name": "TB-500",
   "siteName": "TB-500",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -2235,6 +2269,7 @@ window.RDS_COMPOUNDS = [
   "slug": "ghk-cu",
   "name": "GHK-Cu",
   "siteName": "GHK-Cu",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -2295,6 +2330,7 @@ window.RDS_COMPOUNDS = [
   "slug": "kpv",
   "name": "KPV",
   "siteName": "KPV",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -2346,6 +2382,7 @@ window.RDS_COMPOUNDS = [
   "slug": "cerebrolysin",
   "name": "Cerebrolysin",
   "siteName": "Cerebrolysin",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -2400,6 +2437,7 @@ window.RDS_COMPOUNDS = [
   "slug": "semax",
   "name": "Semax",
   "siteName": "Semax",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -2468,6 +2506,7 @@ window.RDS_COMPOUNDS = [
   "slug": "selank",
   "name": "Selank",
   "siteName": "Selank",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -2532,6 +2571,7 @@ window.RDS_COMPOUNDS = [
   "slug": "dsip",
   "name": "DSIP",
   "siteName": "DSIP",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -2590,6 +2630,7 @@ window.RDS_COMPOUNDS = [
   "slug": "pinealon",
   "name": "Pinealon",
   "siteName": "Pinealon",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -2635,6 +2676,7 @@ window.RDS_COMPOUNDS = [
   "slug": "adamax",
   "name": "Adamax",
   "siteName": "Adamax",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -2693,6 +2735,7 @@ window.RDS_COMPOUNDS = [
   "slug": "bronchogen",
   "name": "Bronchogen",
   "siteName": "Bronchogen",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -2746,6 +2789,7 @@ window.RDS_COMPOUNDS = [
   "slug": "cardiogen",
   "name": "Cardiogen",
   "siteName": "Cardiogen",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -2788,6 +2832,7 @@ window.RDS_COMPOUNDS = [
   "slug": "cartalax",
   "name": "Cartalax",
   "siteName": "Cartalax",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -2835,6 +2880,7 @@ window.RDS_COMPOUNDS = [
   "slug": "crystagen",
   "name": "Crystagen",
   "siteName": "Crystagen",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -2877,6 +2923,7 @@ window.RDS_COMPOUNDS = [
   "slug": "pancragen",
   "name": "Pancragen",
   "siteName": "Pancragen",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -2919,6 +2966,7 @@ window.RDS_COMPOUNDS = [
   "slug": "prostamax",
   "name": "Prostamax",
   "siteName": "Prostamax",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -2961,6 +3009,7 @@ window.RDS_COMPOUNDS = [
   "slug": "vilon",
   "name": "Vilon",
   "siteName": "Vilon",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -3003,6 +3052,7 @@ window.RDS_COMPOUNDS = [
   "slug": "epithalon",
   "name": "Epitalon",
   "siteName": "Epithalon",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -3066,6 +3116,7 @@ window.RDS_COMPOUNDS = [
   "slug": "lipo-shredder",
   "name": "LIPO Shredder",
   "siteName": "LIPO Shredder",
+  "guide": true,
   "route": "Injectable",
   "unit": "mL",
   "vials": [
@@ -3112,6 +3163,7 @@ window.RDS_COMPOUNDS = [
   "slug": "lipo-b",
   "name": "LIPO-B",
   "siteName": "LIPO-B",
+  "guide": true,
   "route": "Injectable",
   "unit": "mL",
   "vials": [
@@ -3160,6 +3212,7 @@ window.RDS_COMPOUNDS = [
   "slug": "lipo-c",
   "name": "LIPO-C",
   "siteName": "LIPO-C",
+  "guide": true,
   "route": "Injectable",
   "unit": "mL",
   "vials": [
@@ -3208,6 +3261,7 @@ window.RDS_COMPOUNDS = [
   "slug": "lipo-c-2",
   "name": "LIPO-C+",
   "siteName": "LIPO-C+",
+  "guide": true,
   "route": "Injectable",
   "unit": "mL",
   "vials": [
@@ -3254,6 +3308,7 @@ window.RDS_COMPOUNDS = [
   "slug": "lipo-mino-mix",
   "name": "LIPO-Mino-Mix",
   "siteName": "LIPO-Mino-Mix",
+  "guide": true,
   "route": "Injectable",
   "unit": "mL",
   "vials": [
@@ -3300,6 +3355,7 @@ window.RDS_COMPOUNDS = [
   "slug": "super-tropic",
   "name": "Super Tropic",
   "siteName": "Super Tropic",
+  "guide": true,
   "route": "Injectable",
   "unit": "mL",
   "vials": [
@@ -3350,6 +3406,7 @@ window.RDS_COMPOUNDS = [
   "slug": "wolverineblend",
   "name": "BPC-157 / TB-500 (\"Wolverine\")",
   "siteName": "BPC-157/TB-500 Blend",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -3401,6 +3458,7 @@ window.RDS_COMPOUNDS = [
   "slug": "bpc-157-tb-500-cartalax",
   "name": "BPC-157 / TB-500 / Cartalax",
   "siteName": "BPC-157/TB-500/Cartalax",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -3451,6 +3509,7 @@ window.RDS_COMPOUNDS = [
   "slug": "hulk-2",
   "name": "CJC-1295 (no DAC) / Ipamorelin 10/10",
   "siteName": "CJC No DAC/Ipamorelin 10/10mg Blend",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -3505,6 +3564,7 @@ window.RDS_COMPOUNDS = [
   "slug": "cjc-no-dac-5mg-ipamorelin-5mg-blend",
   "name": "CJC-1295 (no DAC) / Ipamorelin 5/5",
   "siteName": "CJC No DAC/Ipamorelin 5/5mg Blend",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -3551,6 +3611,7 @@ window.RDS_COMPOUNDS = [
   "slug": "glow",
   "name": "GLOW",
   "siteName": "GLOW",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -3603,6 +3664,7 @@ window.RDS_COMPOUNDS = [
   "slug": "glow-tropic",
   "name": "GLOW Tropic",
   "siteName": "GLOW Tropic Blend",
+  "guide": true,
   "route": "Injectable",
   "unit": "mL",
   "vials": [
@@ -3660,6 +3722,7 @@ window.RDS_COMPOUNDS = [
   "slug": "glp1-scagrilinitide",
   "name": "Semaglutide / Cagrilintide 5/5",
   "siteName": "GLP1-S/Cagrilinitide Blend",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -3710,6 +3773,7 @@ window.RDS_COMPOUNDS = [
   "slug": "glp3-r-cagrilinitide-blend",
   "name": "Retatrutide / Cagrilintide 12.5/2.5",
   "siteName": "GLP3-R/Cagrilinitide Blend",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -3752,6 +3816,7 @@ window.RDS_COMPOUNDS = [
   "slug": "illumi-neuro-blend",
   "name": "Illumi-neuro",
   "siteName": "Illumi-neuro",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -3802,6 +3867,7 @@ window.RDS_COMPOUNDS = [
   "slug": "k-copper",
   "name": "K-Copper",
   "siteName": "K-Copper",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -3852,6 +3918,7 @@ window.RDS_COMPOUNDS = [
   "slug": "klow",
   "name": "KLOW",
   "siteName": "KLOW",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -3900,6 +3967,7 @@ window.RDS_COMPOUNDS = [
   "slug": "mito-blend",
   "name": "Mito Blend",
   "siteName": "Mito Blend",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -3947,6 +4015,7 @@ window.RDS_COMPOUNDS = [
   "slug": "selank-10mg-semax-10mg",
   "name": "Selank / Semax 10/10",
   "siteName": "Selank/Semax 10mg Blend",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -4001,6 +4070,7 @@ window.RDS_COMPOUNDS = [
   "slug": "tesamorelin-ipamorelin-blend",
   "name": "Tesamorelin / Ipamorelin 10/3",
   "siteName": "Tesamorelin/Ipamorelin Blend",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -4053,6 +4123,7 @@ window.RDS_COMPOUNDS = [
   "slug": "tesamorelin-ipamorelin-cjc-1295-no-dac",
   "name": "Tesamorelin / Ipamorelin / CJC-1295 (no DAC)",
   "siteName": "Tesamorelin/Ipamorelin/CJC-1295 NO DAC",
+  "guide": true,
   "route": "Injectable",
   "unit": "mg",
   "vials": [
@@ -4105,6 +4176,7 @@ window.RDS_COMPOUNDS = [
   "slug": "5-amino-1mq-oral",
   "name": "5-Amino-1MQ (oral)",
   "siteName": "5-Amino-1MQ",
+  "guide": true,
   "route": "Oral",
   "unit": "capsule",
   "vials": [
@@ -4152,6 +4224,7 @@ window.RDS_COMPOUNDS = [
   "slug": "bpc-157-oral",
   "name": "BPC-157 (oral)",
   "siteName": "BPC-157",
+  "guide": true,
   "route": "Oral",
   "unit": "capsule",
   "vials": [
@@ -4198,6 +4271,7 @@ window.RDS_COMPOUNDS = [
   "slug": "bpc-157tb-500-500-500mcg-oral",
   "name": "BPC-157 / TB-500 (oral)",
   "siteName": "BPC-157/TB-500 Blend",
+  "guide": true,
   "route": "Oral",
   "unit": "capsule",
   "vials": [
@@ -4244,6 +4318,7 @@ window.RDS_COMPOUNDS = [
   "slug": "ghk-cu-oral",
   "name": "GHK-Cu (oral)",
   "siteName": "GHK-Cu",
+  "guide": true,
   "route": "Oral",
   "unit": "capsule",
   "vials": [
@@ -4298,6 +4373,7 @@ window.RDS_COMPOUNDS = [
   "slug": "kpv-500mcg",
   "name": "KPV (oral)",
   "siteName": "KPV",
+  "guide": true,
   "route": "Oral",
   "unit": "capsule",
   "vials": [
@@ -4341,6 +4417,7 @@ window.RDS_COMPOUNDS = [
   "slug": "sermorelin-oral",
   "name": "Sermorelin (oral)",
   "siteName": "Sermorelin",
+  "guide": true,
   "route": "Oral",
   "unit": "capsule",
   "vials": [
@@ -4384,6 +4461,7 @@ window.RDS_COMPOUNDS = [
   "slug": "slu-pp-332-oral",
   "name": "SLU-PP-332 (oral)",
   "siteName": "SLU-PP-332",
+  "guide": true,
   "route": "Oral",
   "unit": "capsule",
   "vials": [
@@ -4431,6 +4509,7 @@ window.RDS_COMPOUNDS = [
   "slug": "slu-pp-332-5-amino-1mq-oral",
   "name": "SLU-PP-332 / 5-Amino-1MQ (oral)",
   "siteName": "SLU-PP-332/5-AMINO-1MQ",
+  "guide": true,
   "route": "Oral",
   "unit": "capsule",
   "vials": [
@@ -4478,6 +4557,7 @@ window.RDS_COMPOUNDS = [
   "slug": "pt-141-oxytocin-n-acetyl-l-tyrosine-kisspeptin-vip-oral",
   "name": "PT-141 / Oxytocin / NALT / Kisspeptin / VIP (oral)",
   "siteName": "PT-141/Oxytocin/N-Acetyl L-Tyrosine/Kisspeptin/VIP",
+  "guide": true,
   "route": "Oral",
   "unit": "capsule",
   "vials": [
@@ -4521,6 +4601,7 @@ window.RDS_COMPOUNDS = [
   "slug": "glowklow-oral",
   "name": "GLOW + KLOW (oral)",
   "siteName": "Glow + Klow",
+  "guide": true,
   "route": "Oral",
   "unit": "capsule",
   "vials": [
@@ -4568,6 +4649,7 @@ window.RDS_COMPOUNDS = [
   "slug": "ahk-cu-raw-topical",
   "name": "AHK-Cu (topical)",
   "siteName": "AHK-CU",
+  "guide": true,
   "route": "Topical",
   "unit": "application",
   "vials": [],
@@ -4605,6 +4687,7 @@ window.RDS_COMPOUNDS = [
   "slug": "adamax-intranasal",
   "name": "Adamax (nasal)",
   "siteName": "Adamax",
+  "guide": true,
   "route": "Intranasal",
   "unit": "spray",
   "vials": [
@@ -4648,6 +4731,7 @@ window.RDS_COMPOUNDS = [
   "slug": "dsip-intranasal",
   "name": "DSIP (nasal)",
   "siteName": "DSIP",
+  "guide": true,
   "route": "Intranasal",
   "unit": "spray",
   "vials": [
@@ -4687,6 +4771,7 @@ window.RDS_COMPOUNDS = [
   "slug": "epithalon-intranasal",
   "name": "Epitalon (nasal)",
   "siteName": "Epithalon",
+  "guide": true,
   "route": "Intranasal",
   "unit": "spray",
   "vials": [
@@ -4736,6 +4821,7 @@ window.RDS_COMPOUNDS = [
   "slug": "glutathione-intranasal",
   "name": "Glutathione (nasal)",
   "siteName": "Glutathione",
+  "guide": true,
   "route": "Intranasal",
   "unit": "spray",
   "vials": [
@@ -4781,6 +4867,7 @@ window.RDS_COMPOUNDS = [
   "slug": "na-semax-amidate-intranasal",
   "name": "N-Acetyl Semax Amidate (nasal)",
   "siteName": "NA-Semax-Amidate",
+  "guide": true,
   "route": "Intranasal",
   "unit": "spray",
   "vials": [
@@ -4828,6 +4915,7 @@ window.RDS_COMPOUNDS = [
   "slug": "nad-intranasal",
   "name": "NAD+ (nasal)",
   "siteName": "NAD",
+  "guide": true,
   "route": "Intranasal",
   "unit": "spray",
   "vials": [],
@@ -4871,6 +4959,7 @@ window.RDS_COMPOUNDS = [
   "slug": "nad-glutathione-vitamin-c-intranasal",
   "name": "NAD+ / Glutathione / Vitamin C (nasal)",
   "siteName": "NAD/Glutathione/Vitamin C",
+  "guide": true,
   "route": "Intranasal",
   "unit": "spray",
   "vials": [],
@@ -4912,6 +5001,7 @@ window.RDS_COMPOUNDS = [
   "slug": "oxytocin-intranasal",
   "name": "Oxytocin (nasal)",
   "siteName": "Oxytocin",
+  "guide": true,
   "route": "Intranasal",
   "unit": "spray",
   "vials": [],
@@ -4950,6 +5040,7 @@ window.RDS_COMPOUNDS = [
   "slug": "pinealon-intranasal",
   "name": "Pinealon (nasal)",
   "siteName": "Pinealon",
+  "guide": true,
   "route": "Intranasal",
   "unit": "spray",
   "vials": [
@@ -4995,6 +5086,7 @@ window.RDS_COMPOUNDS = [
   "slug": "selank-intranasal",
   "name": "Selank (nasal)",
   "siteName": "Selank",
+  "guide": true,
   "route": "Intranasal",
   "unit": "spray",
   "vials": [
@@ -5040,6 +5132,7 @@ window.RDS_COMPOUNDS = [
   "slug": "semax-intransal",
   "name": "Semax (nasal)",
   "siteName": "Semax",
+  "guide": true,
   "route": "Intranasal",
   "unit": "spray",
   "vials": [
@@ -5085,6 +5178,7 @@ window.RDS_COMPOUNDS = [
   "slug": "orforglipron-2",
   "name": "Orforglipron",
   "siteName": "Orforglipron",
+  "guide": true,
   "route": "Oral",
   "unit": "tablet",
   "vials": [
@@ -5140,6 +5234,7 @@ window.RDS_COMPOUNDS = [
   "slug": "mk-677-25mg-oral",
   "name": "MK-677 (Ibutamoren)",
   "siteName": "MK-677",
+  "guide": true,
   "route": "Oral",
   "unit": "capsule",
   "vials": [
@@ -5183,6 +5278,7 @@ window.RDS_COMPOUNDS = [
   "slug": "mk-777-oral",
   "name": "MK-777 (\"Acetamoren\")",
   "siteName": "MK-777",
+  "guide": true,
   "route": "Oral",
   "unit": "capsule",
   "vials": [
@@ -5224,6 +5320,7 @@ window.RDS_COMPOUNDS = [
   "slug": "tesofensine",
   "name": "Tesofensine",
   "siteName": "Tesofensine",
+  "guide": true,
   "route": "Oral",
   "unit": "capsule",
   "vials": [
@@ -5261,6 +5358,7 @@ window.RDS_COMPOUNDS = [
   "slug": "methylene-blue-25mg-oral",
   "name": "Methylene Blue (oral)",
   "siteName": "Methylene Blue",
+  "guide": true,
   "route": "Oral",
   "unit": "pill",
   "vials": [
@@ -5302,6 +5400,7 @@ window.RDS_COMPOUNDS = [
   "slug": "9-me-bc-methylene-blue",
   "name": "9-Me-BC + Methylene Blue",
   "siteName": "9-ME-BC",
+  "guide": true,
   "route": "Oral",
   "unit": "capsule",
   "vials": [
@@ -5337,6 +5436,7 @@ window.RDS_COMPOUNDS = [
   "slug": "dihexa-oral",
   "name": "Dihexa",
   "siteName": "Dihexa",
+  "guide": true,
   "route": "Oral",
   "unit": "capsule",
   "vials": [
@@ -5378,6 +5478,7 @@ window.RDS_COMPOUNDS = [
   "slug": "dihexa-methylene-blue-tesofensine-oral",
   "name": "Dihexa / Methylene Blue / Tesofensine",
   "siteName": "Dihexa/Tesofensine/Methylene Blue",
+  "guide": true,
   "route": "Oral",
   "unit": "capsule",
   "vials": [
@@ -5413,6 +5514,7 @@ window.RDS_COMPOUNDS = [
   "slug": "bpc-157-tb-500-kpv-larazotide",
   "name": "BPC-157 / TB-500 / KPV / Larazotide (oral)",
   "siteName": "BPC-157/TB-500/KPV/Larazotide",
+  "guide": true,
   "route": "Oral",
   "unit": "capsule",
   "vials": [
@@ -5457,6 +5559,7 @@ window.RDS_COMPOUNDS = [
   "slug": "bam-15",
   "name": "BAM-15",
   "siteName": "Bam-15",
+  "guide": true,
   "route": "Oral",
   "unit": "pill",
   "vials": [
@@ -5498,6 +5601,7 @@ window.RDS_COMPOUNDS = [
   "slug": "slu-pp-332-bam-15",
   "name": "SLU-PP-332 / BAM-15 (oral)",
   "siteName": "SLU-PP-332/BAM-15",
+  "guide": true,
   "route": "Oral",
   "unit": "pill",
   "vials": [
@@ -5539,6 +5643,7 @@ window.RDS_COMPOUNDS = [
   "slug": "atx-304-oral",
   "name": "ATX-304",
   "siteName": "ATX-304",
+  "guide": true,
   "route": "Oral",
   "unit": "capsule",
   "vials": [
@@ -5580,6 +5685,7 @@ window.RDS_COMPOUNDS = [
   "slug": "acetyl-hexapeptide-8",
   "name": "Acetyl Hexapeptide-8 (Argireline)",
   "siteName": "Acetyl hexapeptide-8, Raw",
+  "guide": true,
   "route": "Topical",
   "unit": "application",
   "vials": [],
@@ -5613,6 +5719,7 @@ window.RDS_COMPOUNDS = [
   "slug": "snap-8",
   "name": "Snap-8",
   "siteName": "Snap 8",
+  "guide": true,
   "route": "Topical",
   "unit": "application",
   "vials": [],
